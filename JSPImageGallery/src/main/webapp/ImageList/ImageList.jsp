@@ -5,7 +5,7 @@
 <%@page import="java.sql.*,java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-ImageDao dao = new ImageDao();
+	ImageDao dao = new ImageDao();
 	ArrayList<Image> iList = dao.imageList();
 %>
 <!DOCTYPE html>
@@ -14,6 +14,8 @@ ImageDao dao = new ImageDao();
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link href="../bootstrap/bootstrap.min.css" rel="stylesheet">
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/formCheck.js"></script>
 </head>
 <body>
 <div class="container">
@@ -22,7 +24,7 @@ ImageDao dao = new ImageDao();
 		<form class="col-8">
 			<div class="row">
 				<div class="col-1">
-					<img src="https://via.placeholder.com/50" alt="샘플이미지">
+					<img src="https://via.placeholder.com/50" alt="샘플이미지" src="imageList.jsp">
 				</div>
 				<div class="col-9">
 					<input type="text" class="form-control">
@@ -32,9 +34,10 @@ ImageDao dao = new ImageDao();
 				</div>
 			</div>
 		</form>
-		<div class="col-4">
+		<div class="col-4 text-end">
 			<input type="button" value="회원가입" href="" class="btn btn-light">
 			<input type="button" value="로그인" href="" class="btn btn-light">
+			<a href="uploadForm.jsp" class="btn btn-outline-success">업로드</a>
 		</div>
 	</div>
 	
@@ -48,7 +51,18 @@ ImageDao dao = new ImageDao();
 		</div>
 	</div>
 	<div class="row"> <!-- 이미지 출력 -->
-
+		<div class="col">
+			<c:forEach var="i" items="<%= iList %>">
+				<a>
+					<img src="D:\JSPStudy\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\JSPImageGallery\upload\ ${i.imagePath }" 
+								class="d-inline-block w-33 p-3">
+				</a>
+			</c:forEach>
+		</div>
+	</div>
+	<div class="row">
+		<img src="${i.imagePath }" 
+								class="d-inline-block w-33 p-3">
 	</div>
 	
 	

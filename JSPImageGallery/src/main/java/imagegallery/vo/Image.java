@@ -2,29 +2,34 @@ package imagegallery.vo;
 
 public class Image {
 	
-	private int no;
 	private String id;
 	private String pass;
 	private String name;
 	private String phone;
 	private String mail;
+	
+	private int no;
 	private String imageName;
 	private String imagePath;
 	private String imageContent;
+	
+	private int commentNo;
 	private String comment;
 
 	public Image() {}
-	public Image(int no, String id, String pass, String name, String phone, String mail,
-						String imageName, String imagePath, String imageContent, String comment) {
-		this.no = no;
+	public Image(String id, String pass, String name, String phone, String mail,
+							int no, String imageName, String imagePath, String imageContent, 
+							int commentNo, String comment) {
 		this.id = id;
 		this.pass = pass;
 		this.name = name;
 		this.phone = phone;
 		this.mail = mail;
+		this.no = no;
 		this.imageName = imageName;
 		this.imagePath = imagePath;
 		this.imageContent = imageContent;
+		this.commentNo = commentNo;
 		this.comment = comment;
 	}
 	
@@ -89,7 +94,12 @@ public class Image {
 	public void setNo(int no) {
 		this.no = no;
 	}
-	
+	public int getCommentNo() {
+		return commentNo;
+	}
+	public void setCommentNo(int commentNo) {
+		this.commentNo = commentNo;
+	}
 	
 	
 }
