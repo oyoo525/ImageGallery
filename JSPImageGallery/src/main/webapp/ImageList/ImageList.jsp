@@ -7,6 +7,8 @@
 <%
 	ImageDao dao = new ImageDao();
 	ArrayList<Image> iList = dao.imageList();
+	
+	request.setAttribute("iList", iList);
 %>
 <!DOCTYPE html>
 <html>
@@ -18,55 +20,51 @@
 <script src="../js/formCheck.js"></script>
 </head>
 <body>
-<div class="container">
-	<!-- Header -->
-	<div class="row">
-		<form class="col-8">
-			<div class="row">
-				<div class="col-1">
-					<img src="https://via.placeholder.com/50" alt="샘플이미지" src="imageList.jsp">
-				</div>
-				<div class="col-9">
-					<input type="text" class="form-control">
-				</div>
-				<div class="col-2">
-					<input type="button" value="검색하기" href="" class="btn btn-warning">
-				</div>
-			</div>
-		</form>
-		<div class="col-4 text-end">
-			<input type="button" value="회원가입" href="" class="btn btn-light">
-			<input type="button" value="로그인" href="" class="btn btn-light">
-			<a href="uploadForm.jsp" class="btn btn-outline-success">업로드</a>
-		</div>
-	</div>
+
+<div class="container-xl">
+	<!-- header -->
+	<%@ include file="../pages/header.jsp" %>
 	
 	<!-- content -->
-	<div class="row position-relative my-3"> <!-- 이미지 검색 -->
+	<div class="row">
+		&nbsp;
+	</div>
+	<div class="row position-relative my-5"> <!-- 이미지 검색 -->
 		<div>
-			<img src="https://via.placeholder.com/1320X500">
+			<img src="https://via.placeholder.com/1320X500" class="w-100">
 		</div>
 		<div class="col-8 offset-2 d-block position-absolute">
-			<p><input type="text" class="form-control"></p>
+			<div class="row">
+				&nbsp;<br>&nbsp;<br>&nbsp;
+			</div>
+			<div class="row mt-5">
+				<div class="col">
+					<h1 class="fw-bold mb-3">다양한 무료 이미지</h1>
+					<div>많은 사람들과 다양한 이미지를 공유하세요. 당신이 필요한 이미지를 검색하세요.</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<input type="text" name="hSearch" id="hSearch" class="form-control">
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="row"> <!-- 이미지 출력 -->
 		<div class="col">
-			<c:forEach var="i" items="<%= iList %>">
-				<a>
-					<img src="D:\JSPStudy\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\JSPImageGallery\upload\ ${i.imagePath }" 
-								class="d-inline-block w-33 p-3">
-				</a>
-			</c:forEach>
+			<div class="row">
+				<c:forEach var="i" items="${iList }">
+					<div class="col-4">
+						<a href="ImageDetail.jsp?no=${i.no }">
+							<img name="images" id="images" class="w-100"
+								src="${i.imagePath }" alt="이미지">
+						</a>
+					</div>
+
+				</c:forEach>
+			</div>
 		</div>
 	</div>
-	<div class="row">
-		<img src="${i.imagePath }" 
-								class="d-inline-block w-33 p-3">
-	</div>
-	
-	
-	
 	
 	<script src="../bootstrap/bootstrap.bundle.min.js"></script>
 </div>

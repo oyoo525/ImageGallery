@@ -12,7 +12,9 @@ public class Image {
 	private String imageName;
 	private String imagePath;
 	private String imageContent;
+	private String imageId;
 	
+
 	private int commentNo;
 	private String comment;
 
@@ -82,6 +84,12 @@ public class Image {
 	public void setImageContent(String imageContent) {
 		this.imageContent = imageContent;
 	}
+	public String getImageId() {
+		return imageId;
+	}
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
+	}
 	public String getComment() {
 		return comment;
 	}
@@ -100,6 +108,6 @@ public class Image {
 	public void setCommentNo(int commentNo) {
 		this.commentNo = commentNo;
 	}
-	
+
 	
 }

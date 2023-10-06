@@ -35,20 +35,18 @@
 	String id = multi.getParameter("imageId");
 	String imageName = multi.getParameter("imageName");
 	String imageContent = multi.getParameter("imageContent");
-	String imagePath = multi.getParameter("imagePath");
-	
+	String imagePath = multi.getOriginalFileName("imagePath"); 
+
+	String fileName = "";
+
 	Image i = new Image();
 	i.setId(id);
 	i.setImageName(imageName);
 	i.setImageContent(imageContent);
-	i.setImagePath(realPath);
+	i.setImagePath("../upload/" + imagePath); 
 	
 	ImageDao dao = new ImageDao();
 	dao.insertImage(i);
-	
-	System.out.println("사진명 : " + i.getImageName());
-	System.out.println("사진경로 : " + realPath);
-	System.out.println("작성자 : " + i.getId());
-	
+
 	response.sendRedirect("ImageList.jsp");
 %>
