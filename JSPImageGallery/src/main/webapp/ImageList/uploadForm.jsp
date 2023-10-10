@@ -33,12 +33,14 @@
 							</tr>
 							<tr>
 								<td colspan="2">
-									<img src="https://via.placeholder.com/800X400" alt="샘플이미지">
+									<div>
+										<img id="previewImage" style="max-width:800px;">
+									</div>
 								</td>
 							</tr>
 							<tr>
 								<td colspan="2">
-									<input type="file" name="imagePath" id="imagePath" class="form-control">
+									<input type="file" name="imagePath" id="imagePath" accept="image/*" class="form-control">
 								</td>
 							</tr>
 							<tr>

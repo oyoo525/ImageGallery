@@ -23,6 +23,18 @@
 			return false;
 		}
 	});
+	
+	
+	// 이미지 미리보기
+	$("#imagePath").on("change", function(event) {
+		var file = event.target.files[0];
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			$("#previewImage").attr("src", e.target.result);
+		}
+		reader.readAsDataURL(file);
+	});
+	
  
 	// 회원가입 --> 가입완료
 	$("#joinForm").on("submit", function() {
