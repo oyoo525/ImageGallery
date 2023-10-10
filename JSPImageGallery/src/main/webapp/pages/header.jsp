@@ -36,7 +36,7 @@
 <!-- Header -->
 <div class="container-xl fixed-top">
 	<div class="row">
-		<form name="searchBar" id="searchBar" action="#" class="col">
+		<form name="searchBar" id="searchBar" action="searchProcess.jsp" class="col">
 			<div class="row align-items-center mx-auto">
 				<div class="col-8">
 					<div class="row align-items-center mx-auto">
@@ -46,7 +46,7 @@
 							</a>
 						</div>
 						<div class="col-9">
-							<input type="text" class="form-control">
+							<input type="text" name="searchKeyword" id="searchKeyword" required class="form-control">
 						</div>
 						<div class="col-2">
 							<input type="submit" value="검색하기" class="btn btn-warning">

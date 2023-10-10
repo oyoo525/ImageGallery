@@ -61,7 +61,7 @@
 					<div class="row text-center">
 						<div class="col">
 							<input type="button" value="뒤로가기" name="backBtn" id="backBtn" class="btn btn-light"
-											onclick="history.back'">
+											onclick="history.back()">
 							<input type="reset" value="새로쓰기" class="btn btn-light">
 							<input type="submit" value="등록하기" class="btn btn-warning">
 						</div>

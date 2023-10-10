@@ -43,11 +43,11 @@
 					<div>많은 사람들과 다양한 이미지를 공유하세요. 당신이 필요한 이미지를 검색하세요.</div>
 				</div>
 			</div>
-			<div class="row">
+			<form name="hSearch" id="hSearch"  action="searchProcess.jsp" class="row">
 				<div class="col">
-					<input type="text" name="hSearch" id="hSearch" class="form-control">
+					<input type="text" name="searchKeyword" id="searchKeyword"  class="form-control">
 				</div>
-			</div>
+			</form>
 		</div>
 	</div>
 	<div class="row"> <!-- 이미지 출력 -->
@@ -60,11 +60,12 @@
 								src="${i.imagePath }" alt="이미지">
 						</a>
 					</div>
-
 				</c:forEach>
 			</div>
 		</div>
 	</div>
+	
+
 	
 	<script src="../bootstrap/bootstrap.bundle.min.js"></script>
 </div>

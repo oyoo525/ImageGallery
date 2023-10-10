@@ -57,10 +57,11 @@
 			$("#mail").focus();
 			return false;
 		} 
-		if($("checkId").val() == true) {
-			alert("중복아이디 입니다.");
+		if($("idUncheck").val().equal("unCheckId")) {
+			alert("아이디 중복체크 해주세요")
 			return false;
 		}
+
 	});
 
 	// 로그인 모달 --> 로그인
@@ -74,8 +75,19 @@
 			return false;
 		}		
 	});
-	
 
+	
+	// 메인화면 검색창 이벤트
+	$("hSearch").on("keydown", function(e) {
+		if(e.keyCod == 13) {
+			alert("엔터키");
+		} else {
+			alert(e);
+		}
+				
+		
+	});
+	
 	
 	 
  });

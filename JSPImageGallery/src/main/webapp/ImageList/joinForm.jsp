@@ -1,20 +1,28 @@
+<%@page import="imagegallery.vo.Image"%>
 <%@page import="imagegallery.dao.ImageDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%!
-	public boolean clickCheckId (String id) {
-		ImageDao dao = new ImageDao();
-		boolean checkIdModalPrint = dao.checkId(id);
-		
-		if(checkIdModalPrint) {
-		
-			
-		}
-		
-		return false;
+<%
+	request.setCharacterEncoding("utf-8");
 	
-}
-
+	String uId = request.getParameter("id");
+	
+	Image i = new Image();
+	i.setId(uId);
+	
+	ImageDao dao = new ImageDao();
+	boolean checkId = dao.checkId(i);
+	String result = "";
+	
+	if(uId == null) {
+		result = "아이디를 입력해주세요";
+	} else if(checkId) {
+		result = "중복된 아이디 입니다";
+	} else if(!checkId) {
+		result = "사용가능한 아이디 입니다";
+	}
+	
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -29,17 +37,24 @@
 	<div class="container-xl">
 	<!-- header -->
 	<%@ include file="../pages/header.jsp" %>
-	
-	<!-- 중복확인 모달 -->
-	<div class="modal" id="checkIdModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-sm modal-dialog-centered">
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
 			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
 				<div class="modal-body">
-					<p class="text-center">중복된 아이디 입니다.</p>
-					<p class="text-center"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button></p>
+				  <%= result %>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
 				</div>
 			</div>
-		 </div>
+		</div>
 	</div>
 
 	<!-- content -->
@@ -78,8 +93,9 @@
 												<input type="text" name="id" id="id" class="form-control">
 											</div>
 											<div class="col-4 text-center">
-												<input type="button" name="checkId" id="checkId" value="중복확인" 
-															class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#checkIdModal">
+												<input type="button" name="checkId" id="checkId" value="중복확인"
+																class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+												<input type="hidden" name="idUncheck" id="idUncheck" value="idUncheck">
 											</div>
 										</div>
 									</td>
@@ -139,7 +155,7 @@
 					</div>
 					<div class="row">
 						<div class="col text-center">
-							<input type="button" value="취소하기" class="btn btn-light">
+							<input type="button" value="취소하기" class="btn btn-light" onclick="history.back()">
 							<input type="reset" value="새로쓰기" class="btn btn-light">
 							<input type="submit" value="가입하기" class="btn btn-warning">
 						</div>

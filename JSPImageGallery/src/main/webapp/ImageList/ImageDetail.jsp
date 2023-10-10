@@ -1,5 +1,6 @@
 <%@page import="imagegallery.vo.Image"%>
 <%@page import="imagegallery.dao.ImageDao"%>
+<%@page import="java.util.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -8,9 +9,14 @@
 	
 	ImageDao dao = new ImageDao();
 	Image i = dao.getImage(Integer.parseInt(no));
+	
+	ImageDao dao2 = new ImageDao();
+	ArrayList<Image> cList = dao2.commentList(i);
+	
 
 %> 
 <c:set var = "i" value="<%= i %>" />
+<c:set var = "cList" value="<%= cList %>" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,16 +79,39 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col offset-1 my-3"><!-- 댓글 -->
+				<div class="col-10 offset-1">
 					<div class="row">
-						댓글
+						&nbsp;&nbsp;댓글달기<br>
 					</div>
+					<form name="commentForm" id="commentForm" action="commnetProcess.jsp"
+								class="row">
+						<div class="col-10">
+							<input type="hidden" name="imageNo" id="imageNo" value="<%= i.getNo() %>">
+							아이디 : <input type="text" name="id" id="id">
+							<input type="text" name="commnet" id="commnet" class="form-control">
+						</div>
+						<div class="col-2">
+							<input type="submit" value="등록하기" class="btn btn-primary">
+						</div>					
+					</form>
 				</div>
 			</div>
-		
+			<div class="row">
+				<div class="col-10 offset-1 mb-1">
+					<c:forEach var="c" items="${cList }">
+						<div class="row">
+							@${c.id }<br>
+							${c.comment }
+							<span ></span>
+						</div>
+					</c:forEach>
+				</div>
+			</div>
 		</div>
-		
 	</div>
+	
+
+		
 	
 	
 	

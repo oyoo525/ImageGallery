@@ -32,13 +32,13 @@ public class ImageDao {
 	// 이미지 리스트 출력하기
 	public ArrayList<Image> imageList() {
 		
-		String select = "select * from images";
+		String select = "select * from images ORDER BY no DESC";
 		ArrayList<Image> iList = null;
 		
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASS);
 			pstmt = conn.prepareStatement(select);
-			rs = pstmt.executeQuery(select);
+			rs = pstmt.executeQuery();
 			
 			iList = new ArrayList<Image>();
 			
@@ -140,9 +140,11 @@ public class ImageDao {
 	
 	
 	// 회원가입 --> 아이디 중복체크	// 중복값이면 true를 반환하기!
-	public boolean checkId(String id) {
+	public boolean checkId(Image i) {
 		String select = "SELECT * FROM members";
 		boolean checking = false;
+		String id = i.getId();
+		
 		
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASS);
@@ -198,6 +200,124 @@ public class ImageDao {
 				}
 		}
 	}
+	
+	
+	// 댓글 남기기
+	public void insertComment(Image i) {
+		String insertSelect = "INSERT INTO comments (commentNO, commentID, commentes, imageNo) "
+										+ "VALUES (comments_seq.NEXTVAL, ?, ?, ?)";
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(insertSelect);
+			pstmt.setString(1, i.getId());
+			pstmt.setString(2, i.getComment());
+			pstmt.setInt(3, i.getNo());
+			
+			pstmt.executeUpdate()	;
+					
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+				try {
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	// 댓글 리스트 출력하기
+	public ArrayList<Image> commentList(Image img) {
+		
+		String select = "select * from comments WHERE imageNO=? ORDER BY commentNO DESC";
+		ArrayList<Image> cList = null;
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setInt(1, img.getNo());
+			rs = pstmt.executeQuery();
+			
+			cList = new ArrayList<Image>();
+			
+			while(rs.next()) {
+				Image i = new Image();
+			
+				i.setCommentNo(rs.getInt("commentNO"));
+				i.setId(rs.getString("commentID"));
+				i.setComment(rs.getString("commentes"));
+				i.setNo(rs.getInt("imageNO"));
+				
+				cList.add(i);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return cList;
+	}
+	
+	
+	// 검색해서 출력하기
+	public ArrayList<Image> searchImage(String keyword) {
+		
+		String select = "select * from images WHERE imageName LIKE ? OR imageContent Like ? "
+				+ "OR imageId Like ? ORDER BY no DESC";
+		
+		ArrayList<Image> iList = null;
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setString(1, "%" + keyword + "%");
+			pstmt.setString(2, "%" + keyword + "%");
+			pstmt.setString(3, "%" + keyword + "%");
+			
+			rs = pstmt.executeQuery();
+			
+			iList = new ArrayList<Image>();
+			
+			while(rs.next()) {
+				Image i = new Image();
+			
+				i.setNo(rs.getInt("no"));
+				i.setName(rs.getString("imageId"));
+				i.setImageName(rs.getString("imageName"));
+				i.setImagePath(rs.getString("imagePath"));
+				i.setImageContent(rs.getString("imageContent"));
+				
+				iList.add(i);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return iList;
+	}
+	
 	
 	
 }
