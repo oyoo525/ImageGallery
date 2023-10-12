@@ -12,7 +12,11 @@
 	
 	ImageDao dao2 = new ImageDao();
 	ArrayList<Image> cList = dao2.commentList(i);
+	
+	int commentValue = 0;
+	session.setAttribute("commentValue", 0);
 %> 
+
 <c:set var = "i" value="<%= i %>" />
 <c:set var = "cList" value="<%= cList %>" />
 <!DOCTYPE html>
@@ -37,11 +41,13 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- 이미지 정보출력 -->
 	<form name="ImageDetail" id="ImageDetail" class="row">
 		<div class="col">
 			<div>
 				<div class="col-10 offset-1 mb-1">
-					<h1 class="fw-bold">${i.imageName }</h1>
+					<h1 class="fw-bold">${i.imageName }</h1> ${commentValue }
 					<input type="hidden" name="no" id="no" value="${i.no }">
 					<div class="text-end">
 						<input type="button" name="updateBtn" id="updateBtn" value="수정하기" class="btn btn-light">
@@ -61,13 +67,13 @@
 				</div>
 				<div class="col-5"><!-- 상세내용 -->
 					<div class="row">
+						<pre>Editor : ${i.imageId }</pre>
+					</div>
+					<div class="row">
 						<div class="col">
 							<pre>Content</pre>
 							<pre>${i.imageContent }</pre>
 						</div>
-					</div>
-					<div class="row">
-						<pre>Editor : ${i.imageId }</pre>
 					</div>
 				</div>
 				<div class="col-1"></div>
@@ -79,37 +85,57 @@
 			</div>
 		</div>
 	</form>
-	<div class="row">
+	
+	<!-- 댓글입력하기 -->
+	<form name="commentForm" id="commentForm" action="commnetProcess.jsp"
+						class="row">
+		<input type="hidden" name="x" id="x" value="0">
 		<div class="col-10 offset-1">
 			<div class="row">
-				&nbsp;&nbsp;댓글달기<br>
+				&nbsp;&nbsp;<pre>Comment</pre><br>
 			</div>
-			<form name="commentForm" id="commentForm" action="commnetProcess.jsp"
-						class="row">
+			<div	class="row">
 				<div class="col-10">
 					<input type="hidden" name="imageNo" id="imageNo" value="<%= i.getNo() %>">
 					아이디 : <input type="text" name="id" id="id">
-					<input type="text" name="commnet" id="commnet" class="form-control">
+					<input type="hidden" name="commentImageNo" id="commentImageNo" value="${i.no }">
+					<input type="hidden" name="commentNo" id="commentNo">
+					<input type="text" name="comment" id="comment" class="form-control">
 				</div>
 				<div class="col-2">
-					<input type="submit" value="등록하기" class="btn btn-primary">
+					<c:if test="${sessionScope.commentValue.0 }">
+						<input type="submit" value="등록하기" class="btn btn-primary">
+					</c:if>
+					<c:if test="${sessionScope.commentValue.1 }">
+						<input type="button" name="updateCommentValue" id="updateCommentValue" 
+									value="수정" class="btn btn-primary">
+						<input type="button" value="취소" class="btn btn-primary">
+					</c:if>
 				</div>					
-			</form>
+			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="col-10 offset-1 mb-1">
-			<c:forEach var="c" items="${cList }">
-				<div class="row">
-					@${c.id }<br>
-					${c.comment }
-					<span ></span>
+		<c:forEach var="c" items="${cList }">
+			<div class="row card p-3 m-2">
+				<div class="col">
+					<div class="row">
+						<div class="col d-flex">
+							<p class="me-auto">@${c.id }</p>
+							<input type="button" class="updateCommentBtn"
+										data-comment-no="${c.commentNo}" 
+										onclick="<c:set var='commentValue' value='1' scope='session' />"
+										value="수정하기">&nbsp;
+							<a href="#">삭제하기</a>
+						</div>
+					</div>
+					<div class="row" id="comment-${c.commentNo}">
+						<p>${c.comment }</p>
+					</div>
 				</div>
-			</c:forEach>
-		</div>
-	</div>
+			</div>
+		</c:forEach>
+	</form>
 	
-	<script>
+<script>
 	// 이미지디테일 > 수정하기 버튼 클릭
 	$('#updateBtn').click(function() {
 		$('#ImageDetail').attr("action", "updateForm.jsp").attr("method", "post");
@@ -123,8 +149,26 @@
 		$('#ImageDetail').submit();
 		
 	});
-	</script>
 	
-</div>
+	// 이미지디테일 > 수정하기 버튼 클릭
+	$('.updateCommentBtn').click(function() {
+		session.setAttribute("commentValue", 1);
+		var commentNo = $(this).data('comment-no');
+        var currentComment = $('#comment-' + commentNo).text().trim();
+        $("#comment").val(currentComment);
+        $("#commentNo").val(commentNo);
+        $("#comment").focus();
+	});
+	
+	// 댓글 수정 완료
+	$("#updateCommentValue").click(function() {
+		$('#commentForm').attr("action", "updateComment.jsp").attr("method", "post");
+		$('#commentForm').submit();
+	});
+	
+	
+
+	
+</script>
 </body>
 </html>

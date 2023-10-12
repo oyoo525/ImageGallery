@@ -284,6 +284,34 @@ public class ImageDao {
 		}
 	}
 	
+	// 댓글 수정하기
+	public void updateComment(Image i) {
+		String updateSelect = "UPDATE comments SET commentes=? WHERE commentNO=?";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(updateSelect);
+			pstmt.setString(1, i.getComment());
+			pstmt.setInt(2, i.getCommentNo());
+
+			
+			pstmt.executeUpdate()	;
+					
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+				try {
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	
 	// 댓글 리스트 출력하기
 	public ArrayList<Image> commentList(Image img) {
 		
