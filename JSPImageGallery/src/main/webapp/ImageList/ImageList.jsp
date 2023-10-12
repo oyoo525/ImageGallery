@@ -31,23 +31,8 @@
 	</div>
 	<div class="row position-relative my-5"> <!-- 이미지 검색 -->
 		<div>
-			<img src="https://via.placeholder.com/1320X500" class="w-100">
-		</div>
-		<div class="col-8 offset-2 d-block position-absolute">
-			<div class="row">
-				&nbsp;<br>&nbsp;<br>&nbsp;
-			</div>
-			<div class="row mt-5">
-				<div class="col">
-					<h1 class="fw-bold mb-3">다양한 무료 이미지</h1>
-					<div>많은 사람들과 다양한 이미지를 공유하세요. 당신이 필요한 이미지를 검색하세요.</div>
-				</div>
-			</div>
-			<form name="hSearch" id="hSearch"  action="searchProcess.jsp" class="row">
-				<div class="col">
-					<input type="text" name="searchKeyword" id="searchKeyword"  class="form-control">
-				</div>
-			</form>
+			<br>
+			<img src="../img/top_character.png" class="w-100" style="width:1320px">
 		</div>
 	</div>
 	<div class="row"> <!-- 이미지 출력 -->

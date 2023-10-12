@@ -34,7 +34,7 @@
 							<tr>
 								<td colspan="2">
 									<div>
-										<img id="previewImage" style="max-width:800px;">
+										<img id="previewImage" style="max-width:800px; max-height:400px">
 									</div>
 								</td>
 							</tr>

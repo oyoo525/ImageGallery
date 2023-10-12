@@ -37,7 +37,7 @@
 	String imageContent = multi.getParameter("imageContent");
 	String imagePath = multi.getOriginalFileName("imagePath"); 
 
-	String fileName = "";
+	// String fileName = "";
 
 	Image i = new Image();
 	i.setId(id);

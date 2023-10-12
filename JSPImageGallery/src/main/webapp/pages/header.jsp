@@ -35,14 +35,14 @@
     
 <!-- Header -->
 <div class="container-xl fixed-top">
-	<div class="row">
+	<div class="row" style="background-color: #E3B3C3">
 		<form name="searchBar" id="searchBar" action="searchProcess.jsp" class="col">
 			<div class="row align-items-center mx-auto">
 				<div class="col-8">
 					<div class="row align-items-center mx-auto">
 						<div class="col-1">
 							<a href="ImageList.jsp">
-								<img src="https://via.placeholder.com/50" alt="샘플이미지">
+								<img src="../img/avatars-8lnQmcAYb76TVJxy-KAxorQ-t500x500.jpg" style="width: 50px" alt="logo">
 							</a>
 						</div>
 						<div class="col-9">

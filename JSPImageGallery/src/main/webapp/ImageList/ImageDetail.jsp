@@ -12,8 +12,6 @@
 	
 	ImageDao dao2 = new ImageDao();
 	ArrayList<Image> cList = dao2.commentList(i);
-	
-
 %> 
 <c:set var = "i" value="<%= i %>" />
 <c:set var = "cList" value="<%= cList %>" />
@@ -27,7 +25,7 @@
 <script src="../js/formCheck.js"></script>
 </head>
 <body>
-	<div class="container-xl">
+<div class="container-xl">
 	<!-- header -->
 	<%@ include file="../pages/header.jsp" %>
 	
@@ -39,14 +37,15 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	<form name="ImageDetail" id="ImageDetail" class="row">
 		<div class="col">
-			<div class="row">
+			<div>
 				<div class="col-10 offset-1 mb-1">
 					<h1 class="fw-bold">${i.imageName }</h1>
+					<input type="hidden" name="no" id="no" value="${i.no }">
 					<div class="text-end">
-						<input type="button" value="수정하기" class="btn btn-light">
-						<input type="button" value="삭제하기" class="btn btn-light">
+						<input type="button" name="updateBtn" id="updateBtn" value="수정하기" class="btn btn-light">
+						<input type="button" name="deleteBtn" id="deleteBtn" value="삭제하기" class="btn btn-light">
 					</div>
 				</div>
 			</div>
@@ -78,44 +77,54 @@
 					<span class="row border-bottom"></span>
 				</div>
 			</div>
+		</div>
+	</form>
+	<div class="row">
+		<div class="col-10 offset-1">
 			<div class="row">
-				<div class="col-10 offset-1">
-					<div class="row">
-						&nbsp;&nbsp;댓글달기<br>
-					</div>
-					<form name="commentForm" id="commentForm" action="commnetProcess.jsp"
-								class="row">
-						<div class="col-10">
-							<input type="hidden" name="imageNo" id="imageNo" value="<%= i.getNo() %>">
-							아이디 : <input type="text" name="id" id="id">
-							<input type="text" name="commnet" id="commnet" class="form-control">
-						</div>
-						<div class="col-2">
-							<input type="submit" value="등록하기" class="btn btn-primary">
-						</div>					
-					</form>
-				</div>
+				&nbsp;&nbsp;댓글달기<br>
 			</div>
-			<div class="row">
-				<div class="col-10 offset-1 mb-1">
-					<c:forEach var="c" items="${cList }">
-						<div class="row">
-							@${c.id }<br>
-							${c.comment }
-							<span ></span>
-						</div>
-					</c:forEach>
+			<form name="commentForm" id="commentForm" action="commnetProcess.jsp"
+						class="row">
+				<div class="col-10">
+					<input type="hidden" name="imageNo" id="imageNo" value="<%= i.getNo() %>">
+					아이디 : <input type="text" name="id" id="id">
+					<input type="text" name="commnet" id="commnet" class="form-control">
 				</div>
-			</div>
+				<div class="col-2">
+					<input type="submit" value="등록하기" class="btn btn-primary">
+				</div>					
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-10 offset-1 mb-1">
+			<c:forEach var="c" items="${cList }">
+				<div class="row">
+					@${c.id }<br>
+					${c.comment }
+					<span ></span>
+				</div>
+			</c:forEach>
 		</div>
 	</div>
 	
-
+	<script>
+	// 이미지디테일 > 수정하기 버튼 클릭
+	$('#updateBtn').click(function() {
+		$('#ImageDetail').attr("action", "updateForm.jsp").attr("method", "post");
+		$('#ImageDetail').submit();
 		
+	});
 	
+	// 이미지디테일 > 삭제하기 버튼 클릭
+	$('#deleteBtn').click(function() {
+		$('#ImageDetail').attr("action", "deleteProcess.jsp").attr("method", "post");
+		$('#ImageDetail').submit();
+		
+	});
+	</script>
 	
-	
-	
-	</div>
+</div>
 </body>
 </html>

@@ -90,12 +90,13 @@
 									<td class="col-9">
 										<div class="row">
 											<div class="col-8">
+												<input type="hidden" name="unuseId" id="unuseId">
 												<input type="text" name="id" id="id" class="form-control">
 											</div>
 											<div class="col-4 text-center">
 												<input type="button" name="checkId" id="checkId" value="중복확인"
 																class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-												<input type="hidden" name="idUncheck" id="idUncheck" value="idUncheck">
+												<input type="hidden" name="idUncheck" id="idUncheck" value="false">
 											</div>
 										</div>
 									</td>

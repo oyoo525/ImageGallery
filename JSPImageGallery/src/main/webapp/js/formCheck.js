@@ -35,6 +35,12 @@
 		reader.readAsDataURL(file);
 	});
 	
+	// 회원가입 --> 아이디 중복체크
+	$("#checkId").on("click", function() {
+		alert("헤이");
+		
+	});
+	
  
 	// 회원가입 --> 가입완료
 	$("#joinForm").on("submit", function() {
@@ -89,17 +95,14 @@
 	});
 
 	
-	// 메인화면 검색창 이벤트
-	$("hSearch").on("keydown", function(e) {
-		if(e.keyCod == 13) {
-			alert("엔터키");
-		} else {
-			alert(e);
-		}
-				
-		
-	});
 	
+
 	
+
+
+
+	 
+	 
+	 
 	 
  });

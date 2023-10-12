@@ -138,6 +138,61 @@ public class ImageDao {
 		}
 	}
 	
+	// 이미지 수정하기
+	public void updateImage(Image i) {
+		String updateSelect = "UPDATE images SET imageName=?, imagePath=?, imageContent=?, imageId=? WHERE no=?";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(updateSelect);
+			pstmt.setString(1, i.getImageName());
+			pstmt.setString(2, i.getImagePath());
+			pstmt.setString(3, i.getImageContent());
+			pstmt.setString(4, i.getImageId());
+			pstmt.setInt(5, i.getNo());
+			
+			pstmt.executeUpdate()	;
+					
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+				try {
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	// 이미지 삭제하기
+	public void deleteImage(Image i) {
+		String updateSelect = "DELETE FROM images WHERE no=?";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(updateSelect);
+			pstmt.setInt(1, i.getNo());
+			
+			pstmt.executeUpdate()	;
+					
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+				try {
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	
 	
 	// 회원가입 --> 아이디 중복체크	// 중복값이면 true를 반환하기!
 	public boolean checkId(Image i) {
