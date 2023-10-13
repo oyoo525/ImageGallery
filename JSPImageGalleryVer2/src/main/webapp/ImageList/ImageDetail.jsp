@@ -13,12 +13,10 @@
 	ImageDao dao2 = new ImageDao();
 	ArrayList<Image> cList = dao2.commentList(i);
 	
-	boolean commentUpdateValue = false;
 %> 
 
 <c:set var = "i" value="<%= i %>" />
 <c:set var = "cList" value="<%= cList %>" />
-<c:set var = "commentUpdateValue" value="<%=commentUpdateValue %>" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,21 +32,13 @@
 	<%@ include file="../pages/header.jsp" %>
 	
 	<!-- content -->
-	<div class="row my-5">
+	<!-- 이미지 정보출력 -->
+	<form name="ImageDetail" id="ImageDetail" class="row mt-5">
 		<div class="col">
 			<div class="row">
-				&nbsp;<br>&nbsp;
-			</div>
-		</div>
-	</div>
-	
-	<!-- 이미지 정보출력 -->
-	<form name="ImageDetail" id="ImageDetail" class="row">
-		<div class="col">
-			<div>
 				<div class="col-10 offset-1 mb-1">
-					<h1 class="fw-bold">${i.imageName }</h1> ${commentUpdateValue }
-					<input type="hidden" name="no" id="no" value="${i.no }">
+					imageNo : <input type="text" name="no" id="no" value="${i.no }">
+					<h1 class="fw-bold">${i.imageName }</h1>
 					<div class="text-end">
 						<input type="button" name="updateBtn" id="updateBtn" value="수정하기" class="btn btn-light">
 						<input type="button" name="deleteBtn" id="deleteBtn" value="삭제하기" class="btn btn-light">
@@ -87,8 +77,8 @@
 	</form>
 	
 	
-	<!-- 댓글입력하기 -->
-	<form name="commentForm" id="commentForm" action="commnetProcess.jsp"
+	<!-- 댓글 입출력하기 -->
+	<form name="commentForm" id="commentForm" action="commentProcess.jsp"
 						class="row">
 		<div class="col-10 offset-1">
 			<div class="row">
@@ -97,42 +87,39 @@
 			<!-- 댓글 입력창 -->
 			<div	class="row">
 				<div class="col-10">
-					<input type="hidden" name="imageNo" id="imageNo" value="<%= i.getNo() %>">
+					<input type="hidden" name="no" id="no" value="<%= i.getNo() %>">
 					댓글번호 : <input type="text" name="commentNo" id="commentNo">
-					아이디 : <input type="text" name="id" id="id">
+					아이디 : <input type="text" name="commentId" id="commentId">
 					<input type="text" name="comment" id="comment" class="form-control">
 				</div>
 				<div class="col-2">
-					<c:if test="${not commentUpdateValue }">
-						<input type="submit" value="등록하기" class="btn btn-primary">
-					</c:if>
-					<c:if test="${commentUpdateValue }">
-						<input type="button" 
-									value="댓글수정"  class="btn btn-primary">
-						<input type="button" value="수정취소" class="btn btn-primary">					
-					</c:if>
+						<input type="button" value="등록하기" id="commentPutBtn" 
+									class="btn btn-primary">
+						<input type="button" value="댓글수정" id="commentUpdateCompleteBtn" 
+									class="btn btn-primary">			
 				</div>					
 			</div>
-			
-		</div>
-		<c:forEach var="c" items="${cList }">
-			<div class="row card p-3 m-2">
-				<div class="col">
-					<div class="row">
-						<div class="col d-flex">
-							<p class="me-auto">@${c.id }</p>
-							<input type="button" class="commentUpdateBtn"
-										data-comment-no="${c.commentNo}" 
-										value="수정하기">&nbsp;
-							<a href="#">삭제하기</a>
+			<c:forEach var="c" items="${cList }">
+				<div class="row card p-3 m-2">
+					<div class="col">
+						<div class="row">
+							<div class="col d-flex">
+								<p class="me-auto">@${c.id }</p>
+								<input type="button" class="commentUpdateBtn" value="수정하기" 
+											data-comment-no="${c.commentNo}">&nbsp;
+								<input type="button" class="commentDeleteBtn" value="삭제하기" 
+											data-comment-no2="${c.commentNo}">
+							</div>
+						</div>
+						<div class="row" id="comment-${c.commentNo}">
+							<p>${c.comment }</p>
 						</div>
 					</div>
-					<div class="row" id="comment-${c.commentNo}">
-						<p>${c.comment }</p>
-					</div>
 				</div>
-			</div>
-		</c:forEach>
+			</c:forEach>
+		</div>
+		
+
 	</form>
 
 	
@@ -151,32 +138,38 @@
 		
 	});
 	
+	
 	// 하나의 댓글에서 수정하기 버튼 클릭
 	$('.commentUpdateBtn').click(function() {
-		/* <c:set var='commentUpdateValue' value='true' session='page' /> */
 		var commentNo = $(this).data('comment-no');
         var currentComment = $('#comment-' + commentNo).text().trim();
-        $("#comment").val(currentComment);
         $("#commentNo").val(commentNo);
+        $("#comment").val(currentComment);
         $("#comment").focus();
 	});
-	
-	// 댓글 등록하기 버튼클릭
-	
-
-	$("#updateCommentValue").click(function() {
-		/* <c:set var='commentUpdateValue' value='false' scope='session' /> */
-		$('#commentForm').attr("action", "updateComment.jsp");
-		$('#commentForm').submit();
+	// 하나의 댓글에서 삭제하기 버튼 클릭
+	$('.commentDeleteBtn').click(function() {
+		var commentNo = $(this).data('comment-no2');
+		$("#commentNo").val(commentNo);
+		
+		$("#commentForm").attr("action", "commentDeleteProcess.jsp");
+		$("#commentForm").submit();
 	});
 	
-	// 수정 후 수정완료 버튼 클릭
-	$("#updateCommentValue").click(function() {
-		/* <c:set var='commentUpdateValue' value='false' scope='session' /> */
-
+	
+	
+	// 댓글등록하기 클릭
+	$("#commentPutBtn").on("click", function() {
+		$("#commentForm").attr("action", "commentProcess.jsp");
+		$("#commentForm").submit();
+	});
+	// 댓글수정완료버튼 클릭
+	$("#commentUpdateCompleteBtn").on("click", function() {
+		$("#commentForm").attr("action", "commentUpdateProcess.jsp");
+		$("#commentForm").submit();
 	});
 	
-	// 수정 후 수정취소 버튼 클릭
+	
 	
 
 	
