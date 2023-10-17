@@ -13,7 +13,8 @@ public class Image {
 	private String imagePath;
 	private String imageContent;
 	private String imageId;
-	
+	private int readCount;
+	private int likeCount;
 
 	private int commentNo;
 	private String comment;
@@ -108,6 +109,16 @@ public class Image {
 	public void setCommentNo(int commentNo) {
 		this.commentNo = commentNo;
 	}
-
-	
+	public int getReadCount() {
+		return readCount;
+	}
+	public void setReadCount(int readCount) {
+		this.readCount = readCount;
+	}
+	public int getLikeCount() {
+		return likeCount;
+	}
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
 }

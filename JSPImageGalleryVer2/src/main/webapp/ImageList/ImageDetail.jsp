@@ -6,6 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String no = request.getParameter("no");
+	String pageNum = request.getParameter("pageNum");
 	
 	ImageDao dao = new ImageDao();
 	Image i = dao.getImage(Integer.parseInt(no));
@@ -17,6 +18,7 @@
 
 <c:set var = "i" value="<%= i %>" />
 <c:set var = "cList" value="<%= cList %>" />
+<c:set var = "pageNum" value="<%= pageNum %>" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,15 +36,31 @@
 	<!-- content -->
 	<!-- 이미지 정보출력 -->
 	<form name="ImageDetail" id="ImageDetail" class="row mt-5">
+		<input type="hidden" name="no" id="no" value="${i.no }">
 		<div class="col">
 			<div class="row">
 				<div class="col-10 offset-1 mb-1">
-					imageNo : <input type="text" name="no" id="no" value="${i.no }">
-					<h1 class="fw-bold">${i.imageName }</h1>
-					<div class="text-end">
-						<input type="button" name="updateBtn" id="updateBtn" value="수정하기" class="btn btn-light">
-						<input type="button" name="deleteBtn" id="deleteBtn" value="삭제하기" class="btn btn-light">
+					<div class="row">
+						<div class="col">
+							<h1 class="fw-bold">${i.imageName }</h1>
+						</div>
 					</div>
+					<div class="row">
+						<div class="col-6">
+							조회수 : 
+							<input type="button" id="likeCountBtn" value="좋아요 ❤" 
+										style="border: 0; border-radius: 5px; background-color: salmon">  
+						</div>
+						<div class="col-6 text-end">
+							<input type="button" name="imageListBtn" id="imageListBtn" value="목록보기" class="btn btn-light">
+							<c:if test="${sessionScope.id == i.imageId }">
+								<input type="button" name="updateBtn" id="updateBtn" value="수정하기" class="btn btn-light">
+								<input type="button" name="deleteBtn" id="deleteBtn" value="삭제하기" class="btn btn-light">	
+							</c:if>
+						</div>
+					</div>	
+					
+					
 				</div>
 			</div>
 			<div class="row">
@@ -85,18 +103,19 @@
 				&nbsp;&nbsp;<pre>Comment</pre><br>
 			</div>
 			<!-- 댓글 입력창 -->
-			<div	class="row">
+			<div	class="row px-2">
 				<div class="col-10">
 					<input type="hidden" name="no" id="no" value="<%= i.getNo() %>">
-					댓글번호 : <input type="text" name="commentNo" id="commentNo">
-					아이디 : <input type="text" name="commentId" id="commentId">
+					<input type="hidden" name="commentNo" id="commentNo">
+					<input type="hidden" name="commentId" id="commentId" value="${sessionScope.id }">
+					<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">
 					<input type="text" name="comment" id="comment" class="form-control">
 				</div>
-				<div class="col-2">
-						<input type="button" value="등록하기" id="commentPutBtn" 
-									class="btn btn-primary">
-						<input type="button" value="댓글수정" id="commentUpdateCompleteBtn" 
-									class="btn btn-primary">			
+				<div class="col-2 text-center">
+					<input type="button" value="등록하기" id="commentPutBtn" 
+									class="btn btn-outline-danger">
+					<input type="button" value="댓글수정" id="commentUpdateCompleteBtn" 
+									class="btn btn-outline-danger" style="display:none">		
 				</div>					
 			</div>
 			<c:forEach var="c" items="${cList }">
@@ -105,10 +124,14 @@
 						<div class="row">
 							<div class="col d-flex">
 								<p class="me-auto">@${c.id }</p>
-								<input type="button" class="commentUpdateBtn" value="수정하기" 
-											data-comment-no="${c.commentNo}">&nbsp;
-								<input type="button" class="commentDeleteBtn" value="삭제하기" 
-											data-comment-no2="${c.commentNo}">
+								<c:if test="${sessionScope.id == c.id }" > 
+									<input type="button" class="commentUpdateBtn" value="수정" 
+												data-comment-no="${c.commentNo}"
+												style="text-decoration: underline; border: 0; background-color: transparent; color: gray">&nbsp;
+									<input type="button" class="commentDeleteBtn" value="삭제" 
+												data-comment-no2="${c.commentNo}"
+												style="text-decoration: underline; border: 0; background-color: transparent; color: gray">
+								</c:if>
 							</div>
 						</div>
 						<div class="row" id="comment-${c.commentNo}">
@@ -121,16 +144,21 @@
 		
 
 	</form>
+</div>
 
-	
+
+<script src="../bootstrap/bootstrap.bundle.min.js"></script>
 <script>
+	// 목록보기
+	$("#imageListBtn").on("click", function() {
+		location.href="ImageList.jsp?pageNum="+$("#pageNum").val();
+	});
 	// 이미지디테일 > 수정하기 버튼 클릭
 	$('#updateBtn').click(function() {
 		$('#ImageDetail').attr("action", "updateForm.jsp").attr("method", "post");
 		$('#ImageDetail').submit();
 		
 	});
-	
 	// 이미지디테일 > 삭제하기 버튼 클릭
 	$('#deleteBtn').click(function() {
 		$('#ImageDetail').attr("action", "deleteProcess.jsp").attr("method", "post");
@@ -138,9 +166,11 @@
 		
 	});
 	
-	
 	// 하나의 댓글에서 수정하기 버튼 클릭
 	$('.commentUpdateBtn').click(function() {
+		$("#commentPutBtn").css("display", "none")
+		$("#commentUpdateCompleteBtn").css("display", "block")
+		
 		var commentNo = $(this).data('comment-no');
         var currentComment = $('#comment-' + commentNo).text().trim();
         $("#commentNo").val(commentNo);
@@ -151,12 +181,9 @@
 	$('.commentDeleteBtn').click(function() {
 		var commentNo = $(this).data('comment-no2');
 		$("#commentNo").val(commentNo);
-		
 		$("#commentForm").attr("action", "commentDeleteProcess.jsp");
 		$("#commentForm").submit();
 	});
-	
-	
 	
 	// 댓글등록하기 클릭
 	$("#commentPutBtn").on("click", function() {
@@ -169,7 +196,22 @@
 		$("#commentForm").submit();
 	});
 	
+	// 엔터키 이벤트
+	$("#commentForm").keydown(function (event) {
+        if (event.keyCode == '13') {
+            if (window.event) {
+                event.preventDefault();
+                return;
+            }
+        }
+ 	});
 	
+	// 좋아요 버튼 클릭
+	$("#likeCountBtn").on("click", function() {
+		
+		
+	});
+
 	
 
 	

@@ -15,16 +15,13 @@
 	<%@ include file="../pages/header.jsp" %>
 	
 	<!-- content -->
-	<div class="row my-5">
-		<div class="col">
-			<div class="row">
-				&nbsp;<br>&nbsp;
-			</div>
-		</div>
-	</div>
+
 	<div class="row">
-		<div class="col">
-			<h2 class="text-center">가입해주셔서 감사합니다</h2>
+		<div class="col text-center">
+			<h1 class="text-center">THANK YOU JOIN US</h1>
+			<img src="../img/main_visual_pc_v1.png" style="width:700px"><br>
+			<input type="button" value="로그인" onclick="location.href='loginForm.jsp'"
+						class="btn bg-danger-subtle my-3" style="width:700px">
 		</div>
 	</div>
 	

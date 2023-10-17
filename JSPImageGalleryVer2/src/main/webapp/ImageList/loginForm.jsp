@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
-<%
-	boolean loginValue = Boolean.parseBoolean(request.getParameter("loginValue"));
-%>
-<c:set var="loginValue" value="<%=loginValue %>" session="" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,12 +26,18 @@
 								style="width:500px" class="mb-4">
 					<input type="text" name="id" id="id" placeholder="아이디" class="form-control my-1">
 					<input type="password" name="pass" id="pass" placeholder="비밀번호" class="form-control">
-					<c:if test="${not loginValue }">
-					 <p>아이디와 비밀번호가 맞지 않습니다.</p>
-					</c:if>
-					<input type="submit" value="로그인" id="loginBtn" 
-								class="form-control my-3 py-2" style="background-color: #E3B3C3">
-					<input type="button" value="회원가입">
+					<div class="row">
+						<div class="col">
+							<input type="button" value="회원가입" id="loginFormJoinBtn" 
+									class="form-control my-3 py-2" style="background-color: #E3B3C3">
+						</div>	
+						<div class="col">
+							<input type="submit" value="로그인" id="loginBtn" 
+									class="form-control my-3 py-2" style="background-color: #E3B3C3">
+						</div>				
+					</div>
+					
+					
 				</div>
 			</div>
 		</div>
@@ -53,6 +55,10 @@
 			$("#pass").focus();
 			return false;
 		}
+	});
+	
+	$("#loginFormJoinBtn").on("click", function() {
+		location.href = "joinForm.jsp";
 	});
 
 

@@ -35,16 +35,15 @@
 					<h2 class="fw-bold">사진 수정하기</h2>
 					<input type="hidden" name="imageNo" id="imageNo" value="<%= i.getNo() %>">
 					<input type="hidden" name="imagePath" id="imagePath" value="<%= i.getImagePath() %>">
-					<input type="text" name="imageId" id="imageId" value="<%= i.getImageId() %>">
+					<input type="hidden" name="imageId" id="imageId" value="<%= i.getImageId() %>">
 					<table class="table">
 						<tbody>
 							<tr>
-								<th class="col text-center">사진 미리보기</th>
-								<td>  </td>			
+								<th colspan="2" class="text-start">사진 미리보기</th>
 							</tr>
 							<tr>
 								<td colspan="2">
-									<div>
+									<div class="text-center">
 										<img src="<%= i.getImagePath() %>" id="previewImage" style="max-width:800px; max-height:400px">
 									</div>
 								</td>
@@ -70,7 +69,7 @@
 						<div class="col">
 							<input type="button" value="뒤로가기" name="backBtn" id="backBtn" class="btn btn-light"
 											onclick="history.back()">
-							<input type="submit" value="등록하기" class="btn btn-warning">
+							<input type="submit" value="등록하기" class="btn bg-danger-subtle">
 						</div>
 					</div>
 				</form>

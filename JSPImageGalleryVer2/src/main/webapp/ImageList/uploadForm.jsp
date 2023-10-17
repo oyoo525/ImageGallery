@@ -23,17 +23,16 @@
 			<div class="row">
 				<form name="uploadForm" id="uploadForm" action="uploadProcess.jsp" method="post" 
 						enctype="multipart/form-data" class="col-8 offset-2">
-					<input type="hidden" name="imageId" id="imageId" value="admin">
+					<input type="hidden" name="imageId" id="imageId" value="${sessionScope.id }">
 					<h2 class="fw-bold">사진 업로드</h2>
 					<table class="table">
 						<tbody>
 							<tr>
-								<th class="col-2 text-center">사진 미리보기</th>
-								<td>  </td>			
+								<th colspan="2" class="text-start">사진 미리보기</th>
 							</tr>
 							<tr>
 								<td colspan="2">
-									<div>
+									<div class="text-center">
 										<img id="previewImage" style="max-width:800px; max-height:400px">
 									</div>
 								</td>

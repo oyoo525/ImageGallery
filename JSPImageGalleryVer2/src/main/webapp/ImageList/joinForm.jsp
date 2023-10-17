@@ -2,28 +2,8 @@
 <%@page import="imagegallery.dao.ImageDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-	request.setCharacterEncoding("utf-8");
-	
-	String uId = request.getParameter("id");
-	
-	Image i = new Image();
-	i.setId(uId);
-	
-	ImageDao dao = new ImageDao();
-	boolean checkId = dao.checkId(i);
-	String result = "";
-	
-	if(uId == null) {
-		result = "아이디를 입력해주세요";
-	} else if(checkId) {
-		result = "중복된 아이디 입니다";
-	} else if(!checkId) {
-		result = "사용가능한 아이디 입니다";
-	}
-	
-	
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,51 +14,36 @@
 <script src="../js/formCheck.js"></script>
 </head>
 <body>
-	<div class="container-xl">
 	<!-- header -->
 	<%@ include file="../pages/header.jsp" %>
 
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-				  <%= result %>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- content -->
+<div class="container-sm">
 	<div class="row my-5">
 		<div class="col">
-			<div class="row">
-				&nbsp;<br>&nbsp;
-			</div>
-			<div class="row">
+			<div class="row d-flex">
 				<form name="joinForm" id="joinForm" method="post" action="joinProcess.jsp"
-							class="col-8 offset-2" >
-					<div class="row bg-success p-5">
+							class="col-8 offset-2 align-self-center mx-auto" style="width:500px">
+					<div class="row">
 						<div class="col">
-							<h2>당신의 정보를 입력하세요</h2>
-							<p>
-								사이트를 가입하고 당신의 사진을 공유하세요<br>
-								다양한 이미지를 다운로드하세요
-							</p>
+							<div class="row">
+								<div class="col-6 ps-5">
+									<h2 class="pt-5 fw-b">JOIN US</h2>
+									<p>
+										우리와 함께해요<br>
+										다양한 사진을 공유해요
+									</p>
+								</div>
+								<div class="col-4 text-center">
+									<img src="../img/다운로드 (1).png">
+								</div>
+							</div>						
 						</div>
 					</div>
 					<div class="row">
 						<table class="table">
 							<tbody class="col">
-								<tr class="row my-2"></tr>
+								<tr class="row my-6"></tr>
 								<tr class="row">
 									<th class="col-3 ps-3">이름</th>
 									<td class="col-9">
@@ -90,13 +55,11 @@
 									<td class="col-9">
 										<div class="row">
 											<div class="col-8">
-												<input type="hidden" name="unuseId" id="unuseId">
 												<input type="text" name="id" id="id" class="form-control">
 											</div>
 											<div class="col-4 text-center">
-												<input type="button" name="checkId" id="checkId" value="중복확인"
-																class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-												<input type="hidden" name="idUncheck" id="idUncheck" value="false">
+												<input type="button" id="checkIdBtn" value="중복확인" class="btn btn-success">
+												<input type="hidden" id="checkIdValue" value="0">
 											</div>
 										</div>
 									</td>
@@ -121,10 +84,10 @@
 												</select>
 											</div>
 											<div class="col">
-												<input type="password" name="phone2" id="phone2" class="form-control">
+												<input type="text" name="phone2" id="phone2" maxlength="4" class="form-control">
 											</div>
 											<div class="col">
-											<input type="password" name="phone3" id="phone3" class="form-control">
+											<input type="text" name="phone3" id="phone3" maxlength="4" class="form-control">
 											</div>
 										</div>
 									</td>
@@ -158,7 +121,7 @@
 						<div class="col text-center">
 							<input type="button" value="취소하기" class="btn btn-light" onclick="history.back()">
 							<input type="reset" value="새로쓰기" class="btn btn-light">
-							<input type="submit" value="가입하기" class="btn btn-warning">
+							<input type="button" id="joinSubmitBtn" value="가입하기" class="btn bg-danger-subtle">
 						</div>
 					</div>
 				</form>
@@ -166,9 +129,80 @@
 		</div>
 	</div>
 	
+	<script>
+		// 아이디 중복확인
+		$("#checkIdBtn").on("click", function() {
+			if($("#id").val() <= 0) {
+				alert("아이디를 입력해주세요");
+				<c:set var="checkId" value="" scope="session" />
+				$("#id").focus();
+				return false;
+			}
+			/* $("#joinForm").attr("action", "joinCheckIdProcess.jsp");
+			$("#joinForm").submit();	 */		
+			var id = $("#id").val();
+			var child = window.open('joinCheckIdProcess.jsp?id='+id, '_blanck', 'width=420,height=300,left=200,top=200');
 
+		});
 	
-		<script src="../bootstrap/bootstrap.bundle.min.js"></script>
-	</div>
+		
+		// 회원가입완료
+		$("#joinSubmitBtn").on("click", function() {
+			if($("#name").val().length <=0) {
+				alert("이름을 입력해주세요");
+				$("#name").focus();
+				return false;
+			} 
+			if($("#id").val().length <=0) {
+				alert("아이디를 입력해주세요");
+				$("#id").focus();
+				return false;
+			} 
+			if($("#pass").val().length <=0) {
+				alert("비밀번호를 입력해주세요");
+				$("#pass").focus();
+				return false;
+			} 
+			if($("#phone2").val().length <=0) {
+				alert("전화번호를 입력해주세요");
+				$("#phone2").focus();
+				return false;
+			} 	
+			if($("#phone3").val().length <=0) {
+				alert("전화번호를 입력해주세요");
+				$("#phone3").focus();
+				return false;
+			} 						
+			if($("#uMail").val().length <=0) {
+				alert("이메일을 입력해주세요");
+				$("#mail").focus();
+				return false;
+			} 
+			if(isNaN($("#phone2").val())) {
+				alert("전화번호는 숫자를 입력해주세요");
+				$("#phone2").focus();
+				return false;
+			} 
+			if(isNaN($("#phone3").val())) {
+				alert("전화번호는 숫자를 입력해주세요");
+				$("#phone3").focus();
+				return false;
+			} 
+			if($("#checkIdValue").val() == 0) {
+				alert("아이디를 중복체크 해주세요");
+				return false;
+			}
+			if($("#checkIdValue").val() == 1) {
+				$("#joinForm").attr("action", "joinProcess.jsp").attr("method", "post");
+				$("#joinForm").submit();
+			}		
+		});
+		
+
+		
+	</script>	
+	
+	<script src="../bootstrap/bootstrap.bundle.min.js"></script>
+</div>
 </body>
 </html>

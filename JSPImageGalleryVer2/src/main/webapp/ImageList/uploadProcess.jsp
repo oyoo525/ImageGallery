@@ -36,6 +36,7 @@
 	String imageName = multi.getParameter("imageName");
 	String imageContent = multi.getParameter("imageContent");
 	String imagePath = multi.getOriginalFileName("imagePath"); 
+	String charType = multi.getOriginalFileName("charType"); 
 
 	// String fileName = "";
 
@@ -43,7 +44,8 @@
 	i.setId(id);
 	i.setImageName(imageName);
 	i.setImageContent(imageContent);
-	i.setImagePath("../upload/" + imagePath); 
+	i.setImagePath("../upload/" + imagePath);
+
 	
 	ImageDao dao = new ImageDao();
 	dao.insertImage(i);

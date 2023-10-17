@@ -5,12 +5,57 @@
 <%@page import="imagegallery.vo.Image"%>
 <%@page import="java.sql.*,java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-	ImageDao dao = new ImageDao();
-	ArrayList<Image> iList = dao.imageList();
-	
-	request.setAttribute("iList", iList);
+<%!
+	final int PAGE_SIZE = 3;
+	final int PAGE_GROUP = 10;
 %>
+<%
+	request.setCharacterEncoding("UTF-8");
+
+	String pageNum = request.getParameter("pageNum");
+	String keyword = request.getParameter("keyword");
+	
+	if(pageNum == null) {
+		pageNum = "1";
+	}
+	
+	int currentPage = Integer.parseInt(pageNum);
+	int startRow = currentPage * PAGE_SIZE - (PAGE_SIZE - 1);
+	int endRow = startRow + PAGE_SIZE - 1;
+	int listCount = 0;
+
+	ArrayList<Image> iList = null;
+	ImageDao dao = new ImageDao();
+	
+	boolean searchOption = (keyword == null || keyword.equals("")) ? false : true ;
+	if(!searchOption) {
+		// 게시글 검색을 안했을 때
+		listCount = dao.getImageCount();
+		iList = dao.imageList(startRow, endRow);
+	} else {
+		// 게시글 검색을 했을 때
+		listCount = dao.getImageCount(keyword);
+		iList = dao.imageList(keyword, startRow, endRow);
+	}
+	
+	int pageCount = listCount / PAGE_SIZE 
+			+ (listCount % PAGE_SIZE == 0 ? 0 : 1);
+	int startPage = (currentPage / PAGE_GROUP) * PAGE_GROUP + 1
+		- (currentPage % PAGE_GROUP == 0 ? PAGE_GROUP : 0);
+	int endPage = startPage + PAGE_GROUP - 1;
+	
+	if(endPage > pageCount) {
+		endPage = pageCount;
+	}	
+%>
+<c:set var="iList" value="<%= iList %>" />
+<c:set var="currentPage" value="<%= currentPage %>" />
+<c:set var="pageGroup" value="<%= PAGE_GROUP %>" /> 
+<c:set var="pageCount" value="<%= pageCount %>" />
+<c:set var="startPage" value="<%= startPage %>" />
+<c:set var="endPage" value="<%= endPage %>" />
+<c:set var="searchOption" value="<%= searchOption %>" />
+<c:set var="keyword" value="<%= keyword %>" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,6 +64,13 @@
 <link href="../bootstrap/bootstrap.min.css" rel="stylesheet">
 <script src="../js/jquery-3.3.1.min.js"></script>
 <script src="../js/formCheck.js"></script>
+<style>
+	#back {
+	height:367px;
+	width:1320px; 
+	position: relative;
+	}
+</style>
 </head>
 <body>
 
@@ -27,33 +79,78 @@
 	<%@ include file="../pages/header.jsp" %>
 	
 	<!-- content -->
-	<!-- 메인화면 캐릭터별 버튼 -->
-	<form name="mainButtons" class="row position-relative my-5">
-		<div>
-			<br>
-			<img src="../img/top_character.png" class="w-100" style="width:1320px">
-		</div>
-		<div>
-			<input type="button" value ="폼폼푸린">
-			<input type="button" value ="마이멜로디">
-			<input type="button" value ="쿠로미">
-			<input type="button" value ="시나몬롤">
-		</div>
-	</form>
-	
-	<!-- 이미지 리스트 출력 -->
-	<div class="row"> 
-		<div class="col">
-			<div class="row">
-				<c:forEach var="i" items="${iList }">
-					<div class="col-4">
-						<a href="ImageDetail.jsp?no=${i.no }">
-							<img name="images" id="images" class="w-100"
-								src="${i.imagePath }" alt="이미지">
-						</a>
+	<c:if test="${not searchOption }">
+		<div name="mainButtons" class="row position-relative my-1">
+			<div id="back" class="col">
+				<div class="row">
+					<div class="col">
+						<img src="../img/top_character.png" style="width:1320px" class="w-100">
 					</div>
-				</c:forEach>
+				</div>
 			</div>
+		</div>
+	</c:if>
+	
+	<c:if test="${searchOption }">
+		<div class="row">
+			<div class="col">
+				${keyword }에 대한 검색 결과
+			</div>
+		</div>
+	</c:if>
+	
+	<!-- 이미지 출력 -->
+	<c:if test="${empty iList }">
+		<div class="row">
+			<div class="col">
+				이미지를 찾을 수 없습니다
+			</div>
+		</div>
+	</c:if>
+	<c:if test="${not empty iList }">
+		<div class="row"> 
+			<div class="col">
+				<div class="row">
+					<c:forEach var="i" items="${iList }">
+						<div class="col-4">
+							<a href="ImageDetail.jsp?no=${i.no }&pageNum=${currentPage }">
+								<img name="images" id="images" class="w-100"
+									src="${i.imagePath }" alt="이미지">
+							</a>
+						</div>
+					</c:forEach>
+				</div>
+			</div>
+		</div>
+	</c:if>
+	
+	<!-- 페이지네이션 -->
+	<div class="row">
+		<div class="col">
+			<nav aria-label="Page navigation">
+				<ul class="pagination justify-content-center">
+				  	<c:if test="${ startPage > pageGroup }">
+					    <li class="page-item">
+					      <a class="page-link" href="ImageList.jsp?pageNum=${ startPage - pageGroup }">Pre</a>
+					    </li>
+				    </c:if>
+					<c:forEach var="i" begin="${startPage}" end="${endPage}">
+				    	<c:if test="${i == currentPage }">
+					    	<li class="page-item active" aria-current="page">
+					    		<span class="page-link">${i}</span>
+					    	</li>
+				    	</c:if>
+				    	<c:if test="${i != currentPage }">
+					    	<li class="page-item"><a class="page-link" href="ImageList.jsp?pageNum=${ i }">${i}</a></li>
+					    </c:if>					    
+				    </c:forEach>
+				    <c:if test="${ endPage < pageCount }">
+					    <li class="page-item">
+					      <a class="page-link" href="ImageList.jsp?pageNum=${ startPage + pageGroup }">Next</a>
+					    </li>
+				  	</c:if>
+				</ul>
+			</nav>
 		</div>
 	</div>
 	

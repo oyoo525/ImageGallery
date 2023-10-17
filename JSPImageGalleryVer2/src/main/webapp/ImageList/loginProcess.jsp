@@ -15,13 +15,8 @@
 	
 	ImageDao dao = new ImageDao();
 	boolean login = dao.login(id, pass);
-	boolean loginValue = false;
-
-	
 %>
-<c:set var="login" value="<%= login %>" />
-<c:set var="loginValue" value="<%= loginValue %>" />
-
+<c:set var="login" value="<%= login %>" scope="session" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,20 +27,17 @@
 <script src="../js/formCheck.js"></script>
 </head>
 <body>
-
-
 <!-- 아이디 비밀번호가 일치할 때 -->
 <c:if test="${login }">
-
+	<c:set var="id" value="<%= id %>" scope="session" />
+	<c:redirect url="ImageList.jsp" />
 </c:if>
 
 <!-- 아이디 비밀번호가 일치하지 않을 때-->
 <c:if test="${not login }">
-	<form name="loginValue" id="loginValue" action="loginForm.jsp">
-		<input type="text" name="loginValue" value="${loginValue }">
-	</form>
 	<script>
-		$("loginValue").submit();
+		history.back();
+		alert("아이디와 비밀번호가 맞지 않습니다.");
 	</script>
 </c:if>
 
