@@ -28,16 +28,20 @@
 					<input type="password" name="pass" id="pass" placeholder="비밀번호" class="form-control">
 					<div class="row">
 						<div class="col">
+							<input type="submit" value="로그인" id="loginBtn" 
+									class="form-control mt-3 py-2" style="background-color: #E3B3C3">
+						</div>	
+					</div>
+					<div class="row">
+						<div class="col">
 							<input type="button" value="회원가입" id="loginFormJoinBtn" 
-									class="form-control my-3 py-2" style="background-color: #E3B3C3">
+									class="form-control" style="background-color: #E3B3C3; opacity: .5;">
 						</div>	
 						<div class="col">
-							<input type="submit" value="로그인" id="loginBtn" 
-									class="form-control my-3 py-2" style="background-color: #E3B3C3">
-						</div>				
+							<input type="button" value="비밀번호찾기" id="findPassBtn" 
+									class="form-control" style="background-color: #E3B3C3; opacity: .5;">
+						</div>	
 					</div>
-					
-					
 				</div>
 			</div>
 		</div>
@@ -56,9 +60,13 @@
 			return false;
 		}
 	});
-	
+	// 회원가입으로 이동
 	$("#loginFormJoinBtn").on("click", function() {
 		location.href = "joinForm.jsp";
+	});
+	// 비밀번호 찾기로 이동
+	$("#findPassBtn").on("click", function() {
+		location.href = "findPassForm.jsp";
 	});
 
 

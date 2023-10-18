@@ -55,7 +55,7 @@
 									<td class="col-9">
 										<div class="row">
 											<div class="col-8">
-												<input type="text" name="id" id="id" class="form-control">
+												<input type="text" name="id" id="id" class="form-control" placeholder="12자 이내 문자">
 											</div>
 											<div class="col-4 text-center">
 												<input type="button" id="checkIdBtn" value="중복확인" class="btn btn-success">
@@ -138,8 +138,6 @@
 				$("#id").focus();
 				return false;
 			}
-			/* $("#joinForm").attr("action", "joinCheckIdProcess.jsp");
-			$("#joinForm").submit();	 */		
 			var id = $("#id").val();
 			var child = window.open('joinCheckIdProcess.jsp?id='+id, '_blanck', 'width=420,height=300,left=200,top=200');
 

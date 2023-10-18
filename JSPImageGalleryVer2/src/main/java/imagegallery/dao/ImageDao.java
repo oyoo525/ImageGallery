@@ -52,7 +52,7 @@ public class ImageDao {
 		return count;
 	}
 	public int getImageCount(String keyword) {
-		String select = "SELECT COUNT(*) FROM images WHERE imageId=? OR imageName=? OR imageContent=?";
+		String select = "SELECT COUNT(*) FROM images WHERE imageId LIKE ? OR imageName LIKE ? OR imageContent LIKE ?";
 		int count = 0;
 		
 		try{			
@@ -128,7 +128,7 @@ public class ImageDao {
 		
 		String select = "SELECT * FROM "
 				+ "(SELECT ROWNUM num, i.* FROM "
-				+ "(select * from images WHERE imageName=? OR imageContent=? imageId=? "
+				+ "(select * from images WHERE imageName LIKE ? OR imageContent LIKE ? OR imageId LIKE ? "
 				+ "ORDER BY no DESC) i) "
 				+ "WHERE num BETWEEN ? AND ?";
 		ArrayList<Image> iList = null;
@@ -136,9 +136,9 @@ public class ImageDao {
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASS);
 			pstmt = conn.prepareStatement(select);
-			pstmt.setString(1, keyword);
-			pstmt.setString(2, keyword);
-			pstmt.setString(3, keyword);
+			pstmt.setString(1, "%" + keyword + "%");
+			pstmt.setString(2, "%" + keyword + "%");
+			pstmt.setString(3, "%" + keyword + "%");
 			pstmt.setInt(4, startRow);
 			pstmt.setInt(5, endRow);
 			rs = pstmt.executeQuery();
@@ -214,10 +214,51 @@ public class ImageDao {
 		}
 		return iList;
 	}
+	// 좋아요 이미지 리스트 출력
+	public ArrayList<Image> likeImageList(String id) {
+		
+		String select = "select i.* from likes l, images i  WHERE l.imageno = i.no AND l.likeId=?";
+		ArrayList<Image> iList = null;
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			
+			iList = new ArrayList<Image>();
+			
+			while(rs.next()) {
+				Image i = new Image();
+			
+				i.setNo(rs.getInt("no"));
+				i.setName(rs.getString("imageId"));
+				i.setImageName(rs.getString("imageName"));
+				i.setImagePath(rs.getString("imagePath"));
+				i.setImageContent(rs.getString("imageContent"));
+				
+				iList.add(i);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return iList;
+	}
 	
 	// 이미지 한개 가져오기 (상세보기)
 	public Image getImage(int no) {
-		String getImageSelect = "Select * FROM  images WHERE no=?";
+		String getImageSelect = "SELECT i.* ,(select count(*) from likes WHERE imageno=?) as 카운트 FROM images i WHERE no=?";
 		
 		Image i = null;
 		
@@ -225,6 +266,7 @@ public class ImageDao {
 			conn = DriverManager.getConnection(URL, USER, PASS);
 			pstmt = conn.prepareStatement(getImageSelect);
 			pstmt.setInt(1, no);
+			pstmt.setInt(2, no);
 			rs = pstmt.executeQuery();
 					
 			if(rs.next()) {
@@ -234,6 +276,8 @@ public class ImageDao {
 				i.setImagePath(rs.getString("imagePath"));
 				i.setImageContent(rs.getString("imageContent"));
 				i.setImageId(rs.getString("imageId"));
+				i.setLikeCount(rs.getInt("카운트"));
+				i.setReadCount(rs.getInt("readCount"));
 			}
 			
 		} catch (SQLException e) {
@@ -575,6 +619,38 @@ public class ImageDao {
 		}
 	}
 	
+	// 회원 비밀번호 찾기
+	public String findPass(Image i) {
+		String pass = "";
+		String select = "SELECT * FROM members WHERE id=? AND phone=?";
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setString(1, i.getId());
+			pstmt.setString(2, i.getPhone());
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				pass = rs.getString("pass");
+			}
+					
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}	
+		
+		return pass;
+	}
+	
 	
 	
 	// 댓글 남기기
@@ -716,6 +792,7 @@ public class ImageDao {
 		}
 		return cList;
 	}
+	// 내가 쓴 댓글 리스트 출력하기
 	public ArrayList<Image> commentList(String id) {
 		
 		String select = "select * from comments c, images i "
@@ -758,8 +835,7 @@ public class ImageDao {
 		return cList;
 	}
 	
-	
-	// 검색해서 출력하기
+	// 검색해서 이미지리스트 출력하기
 	public ArrayList<Image> searchImage(String keyword) {
 		
 		String select = "select * from images WHERE imageName LIKE ? OR imageContent Like ? "
@@ -806,6 +882,142 @@ public class ImageDao {
 		return iList;
 	}
 	
+	// 좋아요 버튼 눌렀을 때 기존에 값이 있는지 확인하기
+	public boolean likeCheck(Image i) {
+		boolean check = false;
+		String select = "SELECT * FROM likes WHERE likeId=? AND imageNO=?";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setString(1, i.getId());
+			pstmt.setInt(2, i.getNo());
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) check = true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return check;
+	}
+	
+	// likeValue 1로 만들기 (좋아요 누르기)
+	public void likeValueInsert(Image i) {
+		String select = "INSERT INTO likes (imageNo, likeId, likeValue) VALUES (?, ?, 1)";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setInt(1, i.getNo());
+			pstmt.setString(2, i.getId());
+			pstmt.executeUpdate()	;
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	// likeValue 없애기 (좋아요 취소)
+	public void likeValueDelete(Image i) {
+		String select = "DELETE FROM likes WHERE imageNo=? AND likeId=?";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setInt(1, i.getNo());
+			pstmt.setString(2, i.getId());
+			pstmt.executeUpdate()	;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	// 조회수 조회하기
+	public int readCount(int no) {
+		int count = 0;
+		String select = "SELECT * FROM images WHERE no=?";
+	
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setInt(1, no);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) count = rs.getInt("readCount");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return count;
+	}
+	
+	// 조회수 증가하기
+	public void readCountUp(int no, int count) {
+		String select = "UPDATE images SET readCount=? WHERE no=?";
+	
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setInt(1, count);
+			pstmt.setInt(2, no);
+			pstmt.executeUpdate()	;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	
 }

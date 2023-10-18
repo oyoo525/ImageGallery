@@ -8,7 +8,7 @@
 	String id = (String) session.getAttribute("id");
 
 	ImageDao dao = new ImageDao();
-	ArrayList<Image> iList = dao.imageList(id);
+	ArrayList<Image> iList = dao.likeImageList(id);
 	
 	request.setAttribute("iList", iList);
 	
@@ -33,13 +33,13 @@
 			<div class="row">
 				<ul class="nav nav-tabs nav-pills nav-fill">
 					<li class="nav-item">
-						<a class="nav-link active bg-danger" aria-current="page" href="mypageImageList.jsp">내 이미지</a>
+						<a class="nav-link  text-danger" href="mypageImageList.jsp">내 이미지</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link text-danger" href="mypageCommentList.jsp">내 댓글</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link text-danger" href="mypageLikeList.jsp">내 좋아요</a>
+						<a class="nav-link  active bg-danger" aria-current="page" href="mypageLikeList.jsp">내 좋아요</a>
 					</li>
 				</ul>
 			</div>

@@ -12,6 +12,8 @@
 <body>
 	<div class="col-3">
 		<div class="row">
+			<input type="button" value="@${sessionScope.id }" class="btn btn-lg p-4 fs-3" disabled
+					style="border: 0; background-color: transparent; color: red">
 			<input type="button" id="myInfo" value="내 정보" class="btn btn-lg btn-outline-danger p-4">
 			<input type="button" id="myImage" value="내 이미지" class="btn btn-lg btn-outline-danger p-4">
 			<input type="button" id="deleteAccout" value="회원탈퇴" class="btn btn-lg btn-outline-danger p-4">

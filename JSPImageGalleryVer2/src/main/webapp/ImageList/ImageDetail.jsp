@@ -7,18 +7,26 @@
 <%
 	String no = request.getParameter("no");
 	String pageNum = request.getParameter("pageNum");
+	String keyword = request.getParameter("keyword");
 	
+	// 조회수 조회 후 증가
+	ImageDao dao3 = new ImageDao();
+	int count = dao3.readCount(Integer.parseInt(no));
+	dao3.readCountUp(Integer.parseInt(no), count+1);
+	
+	// 이미지 출력
 	ImageDao dao = new ImageDao();
 	Image i = dao.getImage(Integer.parseInt(no));
 	
+	// 댓글 출력
 	ImageDao dao2 = new ImageDao();
 	ArrayList<Image> cList = dao2.commentList(i);
-	
 %> 
 
 <c:set var = "i" value="<%= i %>" />
 <c:set var = "cList" value="<%= cList %>" />
 <c:set var = "pageNum" value="<%= pageNum %>" />
+<c:set var = "keyword" value="<%= keyword %>" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,7 +44,9 @@
 	<!-- content -->
 	<!-- 이미지 정보출력 -->
 	<form name="ImageDetail" id="ImageDetail" class="row mt-5">
+		<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">
 		<input type="hidden" name="no" id="no" value="${i.no }">
+		<input type="hidden" name="keyword" id="keyword" value="${keyword }">
 		<div class="col">
 			<div class="row">
 				<div class="col-10 offset-1 mb-1">
@@ -46,10 +56,14 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-6">
-							조회수 : 
+						<div class="col-2">
+							조회수 : ${i.readCount }
+						</div>
+						<div class="col-2">
 							<input type="button" id="likeCountBtn" value="좋아요 ❤" 
-										style="border: 0; border-radius: 5px; background-color: salmon">  
+										style="border: 0; border-radius: 5px; background-color: salmon"> ${i.likeCount }
+						</div>
+						<div class="col-2">
 						</div>
 						<div class="col-6 text-end">
 							<input type="button" name="imageListBtn" id="imageListBtn" value="목록보기" class="btn btn-light">
@@ -104,19 +118,32 @@
 			</div>
 			<!-- 댓글 입력창 -->
 			<div	class="row px-2">
-				<div class="col-10">
-					<input type="hidden" name="no" id="no" value="<%= i.getNo() %>">
-					<input type="hidden" name="commentNo" id="commentNo">
-					<input type="hidden" name="commentId" id="commentId" value="${sessionScope.id }">
-					<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">
-					<input type="text" name="comment" id="comment" class="form-control">
-				</div>
-				<div class="col-2 text-center">
-					<input type="button" value="등록하기" id="commentPutBtn" 
-									class="btn btn-outline-danger">
-					<input type="button" value="댓글수정" id="commentUpdateCompleteBtn" 
-									class="btn btn-outline-danger" style="display:none">		
-				</div>					
+				<input type="hidden" name="no" id="no" value="<%= i.getNo() %>">
+				<input type="hidden" name="commentNo" id="commentNo">
+				<input type="hidden" name="commentId" id="commentId" value="${sessionScope.id }">
+				<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">			
+			
+				<c:if test="${not empty sessionScope.id }">
+					<div class="col-10">
+						<input type="text" name="comment" id="comment" class="form-control">				
+					</div>
+					<div class="col-2 text-center">
+						<input type="button" value="등록하기" id="commentPutBtn" 
+									class="btn btn-outline-danger">				
+					</div>
+				</c:if>			
+				<c:if test="${empty sessionScope.id }">
+					<div class="col-10">
+						<input type="text" name="comment" id="comment" class="form-control" 
+									placeholder="로그인 후 댓글을 등록할 수 있습니다">
+					</div>
+					<div class="col-2 text-center">
+						<input type="button" value="로그인" id="loginBtn" 
+										class="btn btn-outline-danger">
+						<input type="button" value="댓글수정" id="commentUpdateCompleteBtn" 
+										class="btn btn-outline-danger" style="display:none">		
+					</div>					
+				</c:if>
 			</div>
 			<c:forEach var="c" items="${cList }">
 				<div class="row card p-3 m-2">
@@ -141,8 +168,6 @@
 				</div>
 			</c:forEach>
 		</div>
-		
-
 	</form>
 </div>
 
@@ -151,7 +176,14 @@
 <script>
 	// 목록보기
 	$("#imageListBtn").on("click", function() {
-		location.href="ImageList.jsp?pageNum="+$("#pageNum").val();
+		if($("#keyword").val() == null) {
+			$("#ImageDetail").attr("action", "ImageList.jsp?pageNum=" + $("#pageNum").val())
+			$("#ImageDetail").submit();
+		}
+		if($("#keyword").val() != null) {
+			$("#ImageDetail").attr("action", "ImageList.jsp?pageNum=" + $("#pageNum").val() + "&keyword=" + $("#keyword").val())
+			$("#ImageDetail").submit();
+		}
 	});
 	// 이미지디테일 > 수정하기 버튼 클릭
 	$('#updateBtn').click(function() {
@@ -184,7 +216,10 @@
 		$("#commentForm").attr("action", "commentDeleteProcess.jsp");
 		$("#commentForm").submit();
 	});
-	
+	// 댓글 등록을 위한 로그인 버튼
+	$("#loginBtn").on("click", function() {
+		location.href="loginForm.jsp";
+	});
 	// 댓글등록하기 클릭
 	$("#commentPutBtn").on("click", function() {
 		$("#commentForm").attr("action", "commentProcess.jsp");
@@ -195,7 +230,6 @@
 		$("#commentForm").attr("action", "commentUpdateProcess.jsp");
 		$("#commentForm").submit();
 	});
-	
 	// 엔터키 이벤트
 	$("#commentForm").keydown(function (event) {
         if (event.keyCode == '13') {
@@ -205,16 +239,11 @@
             }
         }
  	});
-	
 	// 좋아요 버튼 클릭
 	$("#likeCountBtn").on("click", function() {
-		
-		
+		$("#ImageDetail").attr("action", "likeProcess.jsp");
+		$("#ImageDetail").submit();
 	});
-
-	
-
-	
 </script>
 </body>
 </html>

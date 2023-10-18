@@ -7,7 +7,7 @@
 	String no = request.getParameter("no");
 	String commentId = request.getParameter("commentId");
 	String comment = request.getParameter("comment");
-
+	
 	Image i = new Image();
 	i.setNo(Integer.parseInt(no));
 	i.setId(commentId);
@@ -18,6 +18,12 @@
 
 	response.sendRedirect("ImageDetail.jsp?no="+no);
 %>
+<script>
+
+
+</script>
+
+
 <!DOCTYPE html>
 <html>
 <head>

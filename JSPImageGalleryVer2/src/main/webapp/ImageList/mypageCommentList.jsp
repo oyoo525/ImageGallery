@@ -38,6 +38,9 @@
 					<li class="nav-item">
 						<a class="nav-link active  bg-danger" aria-current="page" href="mypageCommentList.jsp">내 댓글</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link text-danger" href="mypageLikeList.jsp">내 좋아요</a>
+					</li>
 				</ul>
 			</div>
 			<div class="row py-3">

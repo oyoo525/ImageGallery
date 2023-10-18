@@ -23,7 +23,7 @@
 <!-- Header -->
 <div class="container-fluid fixed-top">
 	<div class="row" style="background-color: #E3B3C3">
-		<form name="searchBar" id="searchBar" action="searchProcess.jsp" class="col">
+		<form name="searchBar" id="searchBar" class="col">
 			<div class="row align-items-center mx-auto">
 				<div class="col">
 					<div class="row align-items-center mx-auto">
@@ -33,10 +33,10 @@
 							</a>
 						</div>
 						<div class="col-9">
-							<input type="text" name="searchKeyword" id="searchKeyword" required class="form-control">
+							<input type="text" name="keyword" id="keyword" required class="form-control">
 						</div>
 						<div class="col-2">
-							<input type="submit" value="검색하기" class="btn btn-warning">
+							<input type="button" id="searchBtn" value="검색하기" class="btn btn-warning">
 						</div>
 					</div>
 				</div>
@@ -71,7 +71,16 @@
 	<p></p>
 </div>
 
-	<script src="../bootstrap/bootstrap.bundle.min.js"></script>
+<script src="../bootstrap/bootstrap.bundle.min.js"></script>
+<script>
+	$("#searchBtn").on("click", function(){
+		var keyword = $("#keyword").text();
+		$("#searchBar").attr("action", "ImageList.jsp?keyword=" + keyword);
+		$("#searchBar").submit();
+	});
+
+</script>
+
 
 </body>
 </html>
