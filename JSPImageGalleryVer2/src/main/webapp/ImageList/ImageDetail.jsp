@@ -137,7 +137,9 @@
 					</div>
 					<div class="col-2 text-center">
 						<input type="button" value="등록하기" id="commentPutBtn" 
-									class="btn btn-outline-danger">				
+									class="btn btn-outline-danger">	
+						<input type="button" value="댓글수정" id="commentUpdateCompleteBtn" 
+										class="btn btn-outline-danger" style="display:none">				
 					</div>
 				</c:if>			
 				<c:if test="${empty sessionScope.id }">

@@ -10,11 +10,18 @@
 <script src="../js/jquery-3.3.1.min.js"></script>
 <script src="../js/formCheck.js"></script>
 <style>
+	@media screen and (max-width: 1024px) {
 
-
-
-	@media screen and (min-width : 1024px) {
-
+		#infoBtn {
+			width:auto;
+			float:both;
+		}
+		#searchRow {
+			max-width:none;
+		}
+		#searchCol {
+			width: 100%;
+		}
 	}
 </style>
 
@@ -22,42 +29,44 @@
 <body>
 <!-- Header -->
 <div class="container-fluid fixed-top">
-	<div class="row" style="background-color: #E3B3C3">
+	<div class="row" style="background-color: #E3B3C3;">
 		<form name="searchBar" id="searchBar" class="col">
 			<div class="row align-items-center mx-auto">
-				<div class="col">
-					<div class="row align-items-center mx-auto">
-						<div class="col-1">
+				<div id="searchCol" class="col-8">
+					<div id="searchRow" class="row align-items-center mx-auto" style="max-width: 1070px">
+						<div class="col-auto" style="width: 70px">
 							<a href="ImageList.jsp">
-								<img src="../img/avatars-8lnQmcAYb76TVJxy-KAxorQ-t500x500.jpg" style="width: 50px" alt="logo">
+								<img src="../img/avatars-8lnQmcAYb76TVJxy-KAxorQ-t500x500.jpg" class="w-100" alt="logo">
 							</a>
 						</div>
-						<div class="col-9">
-							<input type="text" name="keyword" id="keyword" required class="form-control">
+						<div id="searchText" class="col">
+							<input type="text" name="keyword" id="keyword" class="form-control w-100" placeholder="search">
 						</div>
+						<!--  
 						<div class="col-2">
 							<input type="button" id="searchBtn" value="검색하기" class="btn btn-warning">
-						</div>
+						</div> 
+						-->
 					</div>
 				</div>
-				<div class="colx text-end" style="width: 340px">
-					<div class="row">
-						<div class="col">
+				<div id="infoBtn" class="col-4">
+					<div id="infoBtn" class="row" style="width: 350px;float: right;">
+						<div class="col"  style="">
 							<!-- 로그인 상태일때 -->
 							<c:if test="${sessionScope.login }">
-								<div class="d-fle">
+								<div >
+									<a href="uploadForm.jsp" class="btn btn-outline-success">업로드</a>
 									<a href="../ImageList/mypageInfo.jsp" class="btn btn-light">@${sessionScope.id }</a>&nbsp;
 									<a href="../ImageList/logoutProcess.jsp" class="btn btn-light">로그아웃</a>&nbsp;
-									<a href="uploadForm.jsp" class="btn btn-outline-success">업로드</a>
 								</div>
 
 							</c:if>
 							<!-- 로그인 상태가 아닐때 -->
 							<c:if test="${not sessionScope.login }">
-								<div class="d-flex">
+								<div>
+									<a href="../ImageList/loginForm.jsp" class="btn btn-outline-success">업로드</a>								
 									<a href="../ImageList/joinForm.jsp" class="btn btn-light">회원가입</a>&nbsp;
 									<a href="../ImageList/loginForm.jsp" class="btn btn-light">로그인</a>&nbsp;
-									<a href="../ImageList/loginForm.jsp" class="btn btn-outline-success">업로드</a>								
 								</div>
 							</c:if>
 						</div>

@@ -63,6 +63,7 @@
 	if(endPage > pageCount) {
 		endPage = pageCount;
 	}	
+	
 %>
 <c:set var="iList" value="<%= iList %>" />
 <c:set var="currentPage" value="<%= currentPage %>" />
@@ -81,6 +82,19 @@
 <link href="../bootstrap/bootstrap.min.css" rel="stylesheet">
 <script src="../js/jquery-3.3.1.min.js"></script>
 <script src="../js/formCheck.js"></script>
+<style>
+	.pagination .page-link {
+	    color: white;
+	    background-color: pink; 
+	    
+	}
+	.pagination .page-item.active .page-link {
+	    background-color: red; 
+	    border-color: red;
+	    color: white;
+	}
+	
+</style>
 </head>
 <body>
 
@@ -105,8 +119,7 @@
 		<form class="row" action="ImageList.jsp?order=recent&pageNum=${pageNum }">
 			<div class="col" align="right">
 				<c:if test="${order.equals('recent') }">
-					<select name="order" id="order" onchange="this.form.submit()" 
-								class="form-select" style="width:200px">
+					<select name="order" id="order" onchange="this.form.submit()" class="form-select" style="width:200px">
 						<option value="recent" selected>최신순</option>
 						<option value="view">조회수 많은순</option>
 					</select>
@@ -129,7 +142,7 @@
 			<input type="hidden" name="keyword" value="${keyword }">
 			<div class="col" align="right">
 				<c:if test="${order.equals('recent') }">
-					<select name="order" id="order" onchange="this.form.submit()" class="form-select">
+					<select name="order" id="order" onchange="this.form.submit()" class="form-select" style="width:200px">
 						<option value="recent" selected>최신순</option>
 						<option value="view">조회수 많은순</option>
 					</select>
@@ -140,7 +153,7 @@
 			<input type="hidden" name="keyword" value="${keyword }">
 			<div class="col" align="right">					
 				<c:if test="${order.equals('view') }">
-					<select name="order" id="order" onchange="this.form.submit()" class="form-select">
+					<select name="order" id="order" onchange="this.form.submit()" class="form-select" style="width:200px">
 						<option value="recent">최신순</option>
 						<option value="view" selected>조회수 많은순</option>
 					</select>
@@ -267,8 +280,8 @@
 			</div>
 		</div>
 	</c:if>
-	
 	<script src="../bootstrap/bootstrap.bundle.min.js"></script>
+
 </div>
 </body>
 </html>
