@@ -78,8 +78,7 @@ public class ImageDao {
 		return count;
 	}
 	
-	
-	// 이미지 리스트 출력하기
+	// 이미지 리스트 출력하기 (최신순)
 	public ArrayList<Image> imageList(int startRow, int endRow) {
 		
 		String select = "SELECT * FROM "
@@ -124,12 +123,108 @@ public class ImageDao {
 		}
 		return iList;
 	}
+	// 이미지 리스트 출력하기 (검색 및 최신순)
 	public ArrayList<Image> imageList(String keyword, int startRow, int endRow) {
 		
 		String select = "SELECT * FROM "
 				+ "(SELECT ROWNUM num, i.* FROM "
 				+ "(select * from images WHERE imageName LIKE ? OR imageContent LIKE ? OR imageId LIKE ? "
 				+ "ORDER BY no DESC) i) "
+				+ "WHERE num BETWEEN ? AND ?";
+		ArrayList<Image> iList = null;
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setString(1, "%" + keyword + "%");
+			pstmt.setString(2, "%" + keyword + "%");
+			pstmt.setString(3, "%" + keyword + "%");
+			pstmt.setInt(4, startRow);
+			pstmt.setInt(5, endRow);
+			rs = pstmt.executeQuery();
+			
+			iList = new ArrayList<Image>();
+			
+			while(rs.next()) {
+				Image i = new Image();
+			
+				i.setNo(rs.getInt("no"));
+				i.setName(rs.getString("imageId"));
+				i.setImageName(rs.getString("imageName"));
+				i.setImagePath(rs.getString("imagePath"));
+				i.setImageContent(rs.getString("imageContent"));
+				
+				iList.add(i);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return iList;
+	}
+	
+	// 이미지 리스트 출력하기 (조회수순)
+	public ArrayList<Image> imageListView(int startRow, int endRow) {
+		
+		String select = "SELECT * FROM "
+				+ "(SELECT ROWNUM num, i.* FROM "
+				+ "(select * from images ORDER BY readCount DESC) i) "
+				+ "WHERE num BETWEEN ? AND ?";
+		ArrayList<Image> iList = null;
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			pstmt.setInt(1, startRow);
+			pstmt.setInt(2, endRow);
+			rs = pstmt.executeQuery();
+			
+			iList = new ArrayList<Image>();
+			
+			while(rs.next()) {
+				Image i = new Image();
+			
+				i.setNo(rs.getInt("no"));
+				i.setName(rs.getString("imageId"));
+				i.setImageName(rs.getString("imageName"));
+				i.setImagePath(rs.getString("imagePath"));
+				i.setImageContent(rs.getString("imageContent"));
+				
+				iList.add(i);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return iList;
+	}
+	// 이미지 리스트 출력하기 (검색 및 조회수순)
+	public ArrayList<Image> imageListView(String keyword, int startRow, int endRow) {
+		
+		String select = "SELECT * FROM "
+				+ "(SELECT ROWNUM num, i.* FROM "
+				+ "(select * from images WHERE imageName LIKE ? OR imageContent LIKE ? OR imageId LIKE ? "
+				+ "ORDER BY readCount DESC) i) "
 				+ "WHERE num BETWEEN ? AND ?";
 		ArrayList<Image> iList = null;
 		
@@ -310,8 +405,6 @@ public class ImageDao {
 			pstmt.setString(2, i.getImagePath());
 			pstmt.setString(3, i.getImageContent());
 			pstmt.setString(4, i.getId());
-
-			
 			pstmt.executeUpdate()	;
 					
 		} catch (SQLException e) {

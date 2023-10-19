@@ -14,9 +14,14 @@
 
 	String pageNum = request.getParameter("pageNum");
 	String keyword = request.getParameter("keyword");
+	String order = request.getParameter("order");
 	
 	if(pageNum == null) {
 		pageNum = "1";
+	}
+/////////////////////////////////	
+	if(order == null) {
+		order = "recent";
 	}
 	
 	int currentPage = Integer.parseInt(pageNum);
@@ -28,15 +33,26 @@
 	ImageDao dao = new ImageDao();
 	
 	boolean searchOption = (keyword == null || keyword.equals("")) ? false : true ;
-	if(!searchOption) {
-		// 게시글 검색을 안했을 때
+/////////////////////////////////		
+	if(!searchOption && order.equals("recent")) {
+		// 게시글 검색을 안했을 때 최신순 검색
 		listCount = dao.getImageCount();
 		iList = dao.imageList(startRow, endRow);
-	} else {
-		// 게시글 검색을 했을 때
+	} else if(searchOption && order.equals("recent")) {
+		// 게시글 검색을 했을 때 최신순 검색
 		listCount = dao.getImageCount(keyword);
 		iList = dao.imageList(keyword, startRow, endRow);
+	}	else if(!searchOption && order.equals("view")) {
+		// 게시글 검색을 안했을 때 조회수순 검색
+		listCount = dao.getImageCount();
+		iList = dao.imageListView(startRow, endRow);
+	} else if(searchOption && order.equals("view")) {
+		// 게시글 검색을 했을 때 조회수순 검색
+		listCount = dao.getImageCount(keyword);
+		iList = dao.imageListView(keyword, startRow, endRow);
 	}
+
+
 	
 	int pageCount = listCount / PAGE_SIZE 
 			+ (listCount % PAGE_SIZE == 0 ? 0 : 1);
@@ -56,6 +72,7 @@
 <c:set var="endPage" value="<%= endPage %>" />
 <c:set var="searchOption" value="<%= searchOption %>" />
 <c:set var="keyword" value="<%= keyword %>" />
+<c:set var="order" value="<%= order %>" scope="session" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,14 +81,6 @@
 <link href="../bootstrap/bootstrap.min.css" rel="stylesheet">
 <script src="../js/jquery-3.3.1.min.js"></script>
 <script src="../js/formCheck.js"></script>
-<style>
-	#back {
-	height:367px;
-	width:1320px; 
-	position: relative;
-	}
-
-</style>
 </head>
 <body>
 
@@ -82,16 +91,64 @@
 	<!-- content -->
 	<c:if test="${not searchOption }">
 		<div name="mainButtons" class="row position-relative my-1">
-			<div id="back" class="col">
+			<div class="col">
 				<div class="row">
 					<div class="col">
-						<img src="../img/top_character.png" style="width:1320px" class="w-100">
+						<img src="../img/top_character.png" class="w-100">
 					</div>
 				</div>
 			</div>
 		</div>
 	</c:if>
-	
+<!-- /////////////////////////////////// -->
+	<c:if test="${not searchOption }">
+		<form class="row" action="ImageList.jsp?order=recent&pageNum=${pageNum }">
+			<div class="col" align="right">
+				<c:if test="${order.equals('recent') }">
+					<select name="order" id="order" onchange="this.form.submit()" 
+								class="form-select" style="width:200px">
+						<option value="recent" selected>최신순</option>
+						<option value="view">조회수 많은순</option>
+					</select>
+				</c:if>
+			</div>
+		</form>				
+		<form class="row" action="ImageList.jsp?order=view&pageNum=${pageNum }">
+			<div class="col" align="right">				
+				<c:if test="${order.equals('view') }">
+					<select name="order" id="order" onchange="this.form.submit()" class="form-select" style="width:200px">
+						<option value="recent">최신순</option>
+						<option value="view" selected>조회수 많은순</option>
+					</select>
+				</c:if>
+			</div>
+		</form>
+	</c:if>
+	<c:if test="${searchOption }">
+		<form class="row" action="ImageList.jsp?order=recent&keyword=${keyword }&pageNum=${pageNum }">
+			<input type="hidden" name="keyword" value="${keyword }">
+			<div class="col" align="right">
+				<c:if test="${order.equals('recent') }">
+					<select name="order" id="order" onchange="this.form.submit()" class="form-select">
+						<option value="recent" selected>최신순</option>
+						<option value="view">조회수 많은순</option>
+					</select>
+				</c:if>
+			</div>
+		</form>	
+		<form class="row" action="ImageList.jsp?order=view&keyword=${keyword }&pageNum=${pageNum }">
+			<input type="hidden" name="keyword" value="${keyword }">
+			<div class="col" align="right">					
+				<c:if test="${order.equals('view') }">
+					<select name="order" id="order" onchange="this.form.submit()" class="form-select">
+						<option value="recent">최신순</option>
+						<option value="view" selected>조회수 많은순</option>
+					</select>
+				</c:if>
+			</div>
+		</form>
+	</c:if>
+
 	<c:if test="${searchOption }">
 		<div class="row">
 			<div class="col">
@@ -100,7 +157,7 @@
 		</div>
 	</c:if>
 	
-	<!-- 이미지 출력 -->
+	<!-- 이미지 출력 검색안했을때 -->
 	<c:if test="${not searchOption }">
 		<c:if test="${empty iList }">
 			<div class="row">
@@ -113,7 +170,7 @@
 			<div class="row text-center">
 				<c:forEach var="i" items="${iList }">
 					<div style="width:300px; height:300px; display:inline-block; margin: 10px">
-						<a href="ImageDetail.jsp?no=${i.no }&pageNum=${currentPage }">
+						<a href="ImageDetail.jsp?no=${i.no }&order=${order }&pageNum=${currentPage }">
 							<img name="images" id="images"
 								src="${i.imagePath }" alt="이미지" 
 								style="width:300px; height:300px; object-fit:cover; display:inline-block">
@@ -123,6 +180,8 @@
 			</div>
 		</c:if>
 	</c:if>
+	
+	<!-- 이미지 출력 검색했을때 -->
 	<c:if test="${searchOption }">
 		<c:if test="${empty iList }">
 			<div class="row">
@@ -135,7 +194,7 @@
 			<div class="row text-center">
 				<c:forEach var="i" items="${iList }">
 					<div style="width:300px; height:300px; display:inline-block; margin: 10px">
-						<a href="ImageDetail.jsp?no=${i.no }&pageNum=${currentPage }&keyword=${keyword }">
+						<a href="ImageDetail.jsp?no=${i.no }&order=${order }&pageNum=${currentPage }&keyword=${keyword }">
 							<img name="images" id="images"
 								src="${i.imagePath }" alt="이미지"
 								style="width:300px; height:300px; object-fit:cover; display:inline-block">
@@ -155,7 +214,7 @@
 					<ul class="pagination justify-content-center">
 					  	<c:if test="${ startPage > pageGroup }">
 						    <li class="page-item">
-						      <a class="page-link" href="ImageList.jsp?pageNum=${ startPage - pageGroup }">Pre</a>
+						      <a class="page-link" href="ImageList.jsp?order=${order }&pageNum=${ startPage - pageGroup }">Pre</a>
 						    </li>
 					    </c:if>
 						<c:forEach var="i" begin="${startPage}" end="${endPage}">
@@ -165,12 +224,12 @@
 						    	</li>
 					    	</c:if>
 					    	<c:if test="${i != currentPage }">
-						    	<li class="page-item"><a class="page-link" href="ImageList.jsp?pageNum=${ i }">${i}</a></li>
+						    	<li class="page-item"><a class="page-link" href="ImageList.jsp?order=${order }&pageNum=${ i }">${i}</a></li>
 						    </c:if>					    
 					    </c:forEach>
 					    <c:if test="${ endPage < pageCount }">
 						    <li class="page-item">
-						      <a class="page-link" href="ImageList.jsp?pageNum=${ startPage + pageGroup }">Next</a>
+						      <a class="page-link" href="ImageList.jsp?order=${order }&pageNum=${ startPage + pageGroup }">Next</a>
 						    </li>
 					  	</c:if>
 					</ul>
@@ -185,7 +244,7 @@
 					<ul class="pagination justify-content-center">
 					  	<c:if test="${ startPage > pageGroup }">
 						    <li class="page-item">
-						      <a class="page-link" href="ImageList.jsp?pageNum=${ startPage - pageGroup }&keyword=${keyword }">Pre</a>
+						      <a class="page-link" href="ImageList.jsp?order=${order }&pageNum=${ startPage - pageGroup }&keyword=${keyword }">Pre</a>
 						    </li>
 					    </c:if>
 						<c:forEach var="i" begin="${startPage}" end="${endPage}">
@@ -195,12 +254,12 @@
 						    	</li>
 					    	</c:if>
 					    	<c:if test="${i != currentPage }">
-						    	<li class="page-item"><a class="page-link" href="ImageList.jsp?pageNum=${i }&keyword=${keyword }">${i}</a></li>
+						    	<li class="page-item"><a class="page-link" href="ImageList.jsp?order=${order }&pageNum=${i }&keyword=${keyword }">${i}</a></li>
 						    </c:if>					    
 					    </c:forEach>
 					    <c:if test="${ endPage < pageCount }">
 						    <li class="page-item">
-						      <a class="page-link" href="ImageList.jsp?pageNum=${ startPage + pageGroup }&keyword=${keyword }">Next</a>
+						      <a class="page-link" href="ImageList.jsp?order=${order }&pageNum=${ startPage + pageGroup }&keyword=${keyword }">Next</a>
 						    </li>
 					  	</c:if>
 					</ul>

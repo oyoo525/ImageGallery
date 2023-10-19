@@ -74,8 +74,9 @@
 <script src="../bootstrap/bootstrap.bundle.min.js"></script>
 <script>
 	$("#searchBtn").on("click", function(){
+		var order = $("#order").val();
 		var keyword = $("#keyword").text();
-		$("#searchBar").attr("action", "ImageList.jsp?keyword=" + keyword);
+		$("#searchBar").attr("ImageList.jsp?order=" + order + "&keyword=" + keyword);
 		$("#searchBar").submit();
 	});
 

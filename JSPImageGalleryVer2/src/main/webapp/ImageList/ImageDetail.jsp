@@ -47,6 +47,7 @@
 		<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">
 		<input type="hidden" name="no" id="no" value="${i.no }">
 		<input type="hidden" name="keyword" id="keyword" value="${keyword }">
+		<input type="hidden" name="order" id="order" value="${sessionScope.order }">	
 		<div class="col">
 			<div class="row">
 				<div class="col-10 offset-1 mb-1">
@@ -60,8 +61,15 @@
 							조회수 : ${i.readCount }
 						</div>
 						<div class="col-2">
-							<input type="button" id="likeCountBtn" value="좋아요 ❤" 
+							<c:if test="${empty sessionScope.id }">
+								<input type="button" id="disabledLikeCountBtn" value="좋아요 ❤" 
 										style="border: 0; border-radius: 5px; background-color: salmon"> ${i.likeCount }
+							</c:if>
+							<c:if test="${not empty sessionScope.id }">
+								<input type="button" id="likeCountBtn" value="좋아요 ❤" 
+										style="border: 0; border-radius: 5px; background-color: salmon"> ${i.likeCount }
+							</c:if>
+
 						</div>
 						<div class="col-2">
 						</div>
@@ -122,7 +130,7 @@
 				<input type="hidden" name="commentNo" id="commentNo">
 				<input type="hidden" name="commentId" id="commentId" value="${sessionScope.id }">
 				<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">			
-			
+						
 				<c:if test="${not empty sessionScope.id }">
 					<div class="col-10">
 						<input type="text" name="comment" id="comment" class="form-control">				
@@ -176,12 +184,15 @@
 <script>
 	// 목록보기
 	$("#imageListBtn").on("click", function() {
+		var order = $("#order").val();
+		var pageNum = $("#pageNum").val();
+		var keyword = $("#keyword").val();
 		if($("#keyword").val() == null) {
-			$("#ImageDetail").attr("action", "ImageList.jsp?pageNum=" + $("#pageNum").val())
+			$("#ImageDetail").attr("action", "ImageList.jsp?order=" + order + "&pageNum=" + pageNum)
 			$("#ImageDetail").submit();
 		}
 		if($("#keyword").val() != null) {
-			$("#ImageDetail").attr("action", "ImageList.jsp?pageNum=" + $("#pageNum").val() + "&keyword=" + $("#keyword").val())
+			$("#ImageDetail").attr("action", "ImageList.jsp?order=" + order + "&pageNum=" + pageNum + "&keyword=" + keyword)
 			$("#ImageDetail").submit();
 		}
 	});
@@ -243,6 +254,10 @@
 	$("#likeCountBtn").on("click", function() {
 		$("#ImageDetail").attr("action", "likeProcess.jsp");
 		$("#ImageDetail").submit();
+	});
+	// 좋아요 버튼 클릭(로그인X)
+	$("#disabledLikeCountBtn").on("click", function() {
+		alert("로그인 후 좋아요를 눌러주세요");
 	});
 </script>
 </body>
