@@ -2,13 +2,16 @@
 <%@page import="imagegallery.vo.Image"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <%
 	String no = request.getParameter("no");
+	String pageNum = request.getParameter("pageNum");
 	
 	ImageDao dao = new ImageDao();
 	Image i = dao.getImage(Integer.parseInt(no));
 	
 %>
+<c:set var = "pageNum" value="<%= pageNum %>" />   
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,10 +35,13 @@
 			<div class="row">
 				<form name="updateForm" id="updateForm" action="updateProcess.jsp"
 						enctype="multipart/form-data" class="col-8 offset-2">
+						
 					<h2 class="fw-bold">사진 수정하기</h2>
 					<input type="hidden" name="imageNo" id="imageNo" value="<%= i.getNo() %>">
 					<input type="hidden" name="imagePath" id="imagePath" value="<%= i.getImagePath() %>">
 					<input type="hidden" name="imageId" id="imageId" value="<%= i.getImageId() %>">
+					<input type="hidden" name="order" id="order" value="${sessionScope.order }">			
+					<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">	
 					<table class="table">
 						<tbody>
 							<tr>

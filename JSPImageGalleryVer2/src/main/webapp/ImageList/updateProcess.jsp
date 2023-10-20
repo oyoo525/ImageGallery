@@ -10,6 +10,8 @@
 	String imageContent = request.getParameter("imageContent");
 	String imagePath = request.getParameter("imagePath");
 	String imageId = request.getParameter("imageId");
+	String order = request.getParameter("order");
+	String pageNum = request.getParameter("pageNum");
 	
 	
 	Image i = new Image();
@@ -22,7 +24,7 @@
 	ImageDao dao = new ImageDao();
 	dao.updateImage(i);
 	
-	response.sendRedirect("ImageDetail.jsp?no=" + no);
+	response.sendRedirect("ImageDetail.jsp?no=" + no + "&order=" + order + "&pageNum=" + pageNum);
 	
 %>
 <!DOCTYPE html>

@@ -3,10 +3,14 @@
 <%@page import="imagegallery.dao.ImageDao"%>
 <%@page import="imagegallery.vo.Image"%>
 <%
+	request.setCharacterEncoding("UTF-8");
 
 	String no = request.getParameter("no");
 	String commentId = request.getParameter("commentId");
 	String comment = request.getParameter("comment");
+	String order = request.getParameter("order");
+	String pageNum = request.getParameter("pageNum");
+	String keyword = request.getParameter("keyword");
 	
 	Image i = new Image();
 	i.setNo(Integer.parseInt(no));
@@ -15,21 +19,7 @@
 	
 	ImageDao dao = new ImageDao();
 	dao.insertComment(i);
+	
+	response.sendRedirect("ImageDetail.jsp?no="+ no + "&order=" + order + "&pageNum=" + pageNum);
 
-	response.sendRedirect("ImageDetail.jsp?no="+no);
 %>
-<script>
-
-
-</script>
-
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-</body>
-</html>

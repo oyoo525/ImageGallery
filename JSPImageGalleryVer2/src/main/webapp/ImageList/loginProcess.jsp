@@ -15,8 +15,10 @@
 	
 	ImageDao dao = new ImageDao();
 	boolean login = dao.login(id, pass);
+	boolean loginValue = id.equals("admin");
 %>
 <c:set var="login" value="<%= login %>" scope="session" />
+<c:set var="loginValue" value="<%= loginValue %>"  scope="session" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,6 +32,10 @@
 <!-- 아이디 비밀번호가 일치할 때 -->
 <c:if test="${login }">
 	<c:set var="id" value="<%= id %>" scope="session" />
+	<c:if test="<%= loginValue %>">
+		<c:set var="loginValue" value="true" scope="session" />
+	</c:if>
+	
 	<c:redirect url="ImageList.jsp" />
 </c:if>
 

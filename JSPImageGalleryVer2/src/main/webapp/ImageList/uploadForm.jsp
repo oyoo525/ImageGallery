@@ -25,6 +25,7 @@
 						enctype="multipart/form-data" class="col-8 offset-2">
 					<input type="hidden" name="imageId" id="imageId" value="${sessionScope.id }">
 					<h2 class="fw-bold">사진 업로드</h2>
+	
 					<table class="table">
 						<tbody>
 							<tr>
@@ -46,6 +47,14 @@
 								<th class="col-2 text-center">사진 이름</th>
 								<td>
 									<input type="text" name="imageName" id="imageName" class="form-control">
+								</td>
+							</tr>
+							<tr>
+								<th class="col-2 text-center">캐릭터</th>
+								<td>
+									<select name="character" id="character">
+										<option value="">캐릭터를 선택해주세요</option>
+									</select>
 								</td>
 							</tr>
 							<tr>

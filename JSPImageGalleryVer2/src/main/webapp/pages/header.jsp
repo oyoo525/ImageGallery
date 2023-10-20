@@ -42,21 +42,21 @@
 						<div id="searchText" class="col">
 							<input type="text" name="keyword" id="keyword" class="form-control w-100" placeholder="search">
 						</div>
-						<!--  
-						<div class="col-2">
-							<input type="button" id="searchBtn" value="검색하기" class="btn btn-warning">
-						</div> 
-						-->
 					</div>
 				</div>
 				<div id="infoBtn" class="col-4">
 					<div id="infoBtn" class="row" style="width: 350px;float: right;">
-						<div class="col"  style="">
+						<div class="col">
 							<!-- 로그인 상태일때 -->
 							<c:if test="${sessionScope.login }">
 								<div >
 									<a href="uploadForm.jsp" class="btn btn-outline-success">업로드</a>
-									<a href="../ImageList/mypageInfo.jsp" class="btn btn-light">@${sessionScope.id }</a>&nbsp;
+										<c:if test="${sessionScope.loginValue }">
+											<a href=" ../ImageList/masterInfo.jsp" class="btn btn-light">Master</a>&nbsp;
+										</c:if>
+										<c:if test="${!sessionScope.loginValue }" >
+											<a href=" ../ImageList/mypageInfo.jsp" class="btn btn-light">@${sessionScope.id }</a>&nbsp;										
+										</c:if>
 									<a href="../ImageList/logoutProcess.jsp" class="btn btn-light">로그아웃</a>&nbsp;
 								</div>
 
@@ -88,6 +88,7 @@
 		$("#searchBar").attr("ImageList.jsp?order=" + order + "&keyword=" + keyword);
 		$("#searchBar").submit();
 	});
+
 
 </script>
 

@@ -395,8 +395,8 @@ public class ImageDao {
 	
 	// 이미지 등록하기 (업로드하기)
 	public void insertImage(Image i) {
-		String insertSelect = "INSERT INTO images (no, imageName, imagePath, imageContent, imageId) "
-										+ "VALUES(images_seq.NEXTVAL, ?, ?, ?, ?)";
+		String insertSelect = "INSERT INTO images (no, imageName, imagePath, imageContent, imageId, charType, readCount) "
+										+ "VALUES(images_seq.NEXTVAL, ?, ?, ?, ?, ?, 0)";
 		
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASS);
@@ -1110,6 +1110,108 @@ public class ImageDao {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	// 관리자의 회원정보 조회하기
+	public ArrayList<Image> memberList() {
+		ArrayList<Image> mList = null;
+		String select = "SELECT * FROM members";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(select);
+			rs = pstmt.executeQuery();
+			
+			mList = new ArrayList<Image>();
+			
+			while(rs.next()) {
+				Image i = new Image();
+			
+				i.setId(rs.getString("id"));
+				i.setName(rs.getString("name"));
+				i.setPhone(rs.getString("phone"));
+				i.setMail(rs.getString("mail"));
+				
+				mList.add(i);
+			}
+			
+			for(Image i : mList) {
+				String iId = i.getId();
+				i.setNo(ImgCnt(iId));
+				i.setCommentNo(ComtCnt(iId));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return mList;
+	}
+	
+	// 이미지 개수 출력하기
+	public int ImgCnt(String id) {
+		int Cnt = 0;
+		String selectImagCount = "SELECT count(*) 이미지카운트 FROM images WHERE imageId=?";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(selectImagCount);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) Cnt = rs.getInt("이미지카운트");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return Cnt;
+	}
+	// 댓글 개수 출력하기
+	public int ComtCnt(String id) {
+		int Cnt = 0;
+		String selectComtCount = "SELECT count(*) 이미지카운트 FROM comments WHERE commentID=?";
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(selectComtCount);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) Cnt = rs.getInt("이미지카운트");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return Cnt;
 	}
 	
 	

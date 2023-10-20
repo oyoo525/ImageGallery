@@ -129,7 +129,9 @@
 				<input type="hidden" name="no" id="no" value="<%= i.getNo() %>">
 				<input type="hidden" name="commentNo" id="commentNo">
 				<input type="hidden" name="commentId" id="commentId" value="${sessionScope.id }">
-				<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">			
+				<input type="hidden" name="order" id="order" value="${sessionScope.order }">			
+				<input type="hidden" name="pageNum" id="pageNum" value="${pageNum }">	
+				<input type="hidden" name="keyword" id="keyword" value="${keyword }">		
 						
 				<c:if test="${not empty sessionScope.id }">
 					<div class="col-10">
@@ -189,6 +191,7 @@
 		var order = $("#order").val();
 		var pageNum = $("#pageNum").val();
 		var keyword = $("#keyword").val();
+		if(pageNum == null) pageNum = 1;
 		if($("#keyword").val() == null) {
 			$("#ImageDetail").attr("action", "ImageList.jsp?order=" + order + "&pageNum=" + pageNum)
 			$("#ImageDetail").submit();
@@ -231,6 +234,8 @@
 	});
 	// 댓글 등록을 위한 로그인 버튼
 	$("#loginBtn").on("click", function() {
+		
+		
 		location.href="loginForm.jsp";
 	});
 	// 댓글등록하기 클릭

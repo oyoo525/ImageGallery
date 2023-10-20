@@ -4,6 +4,8 @@
 <%@page import="imagegallery.vo.Image"%>    
 <%
 	String commentNo = request.getParameter("commentNo");
+	String order = request.getParameter("order");
+	String pageNum = request.getParameter("pageNum");
 
 	Image i = new Image();
 	i.setCommentNo(Integer.parseInt(commentNo));
@@ -12,7 +14,7 @@
 	dao.deleteComment(i);
 	
 	String no = request.getParameter("no");
-	response.sendRedirect("ImageDetail.jsp?no=" + no);
+	response.sendRedirect("ImageDetail.jsp?no=" + no + "&order=" + order + "&pageNum=" + pageNum);
 
 %>    
     

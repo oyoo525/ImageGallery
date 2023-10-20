@@ -5,7 +5,9 @@
 <%
 	String commentNo = request.getParameter("commentNo");
 	String comment = request.getParameter("comment");
-
+	String order = request.getParameter("order");
+	String pageNum = request.getParameter("pageNum");
+	
 	Image i = new Image();
 	i.setCommentNo(Integer.parseInt(commentNo));
 	i.setComment(comment);
@@ -14,6 +16,6 @@
 	dao.updateComment(i);
 	
 	String no = request.getParameter("no");
-	response.sendRedirect("ImageDetail.jsp?no=" + no);
+	response.sendRedirect("ImageDetail.jsp?no=" + no + "&order=" + order + "&pageNum=" + pageNum);
 
 %>
